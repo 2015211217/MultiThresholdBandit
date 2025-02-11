@@ -1,4 +1,26 @@
 import numpy as np
+import copy
 
-def TrivialSolver(arms = int, objectives = int, inputMatrix):
-    
+def TrivialSolver(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
+    feedbackMatrix_copy = copy.deepcopy(feedbackMatrix)
+    hatmu = np.zeros((K, M))
+    goodarmset = []
+    TMediate = np.ceil((8 * np.power(sigma, 2) * np.log(M / delta)) / np.power(epsilon, 2))
+    if TMediate < T0:
+        T0 = TMediate
+    for i in range(K):
+        for t in range(T0):
+            # at here handle the update of hat bmmu
+            for m in range(M):
+                hatmu[i][m] = feedbackMatrix_copy[t][i][m]
+        hatmu /= T0
+        flag = True
+        for m0 in range(M):
+            if hatmu[i][m0] < thresholds[m0] - epsilon / 2:
+                flag = False
+        if flag:
+            goodarmset.append(i)
+
+    print(goodarmset)
+
+
