@@ -12,11 +12,12 @@ def TrivialSolver(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
         for t in range(T0):
             # at here handle the update of hat bmmu
             for m in range(M):
-                hatmu[i][m] = feedbackMatrix_copy[t][i][m]
-        hatmu /= T0
+                hatmu[i][m] += feedbackMatrix_copy[t][i][m]
+        for m in range(M):
+            hatmu[i][m] /= T0
         flag = True
-        for m0 in range(M):
-            if hatmu[i][m0] < thresholds[m0] - epsilon / 2:
+        for m in range(M):
+            if hatmu[i][m] < thresholds[m] - epsilon / 2:
                 flag = False
         if flag:
             goodarmset.append(i)
