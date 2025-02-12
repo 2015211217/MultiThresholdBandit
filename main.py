@@ -1,5 +1,9 @@
 import numpy as np
 from TrivialSolver import TrivialSolver
+from MultiAPTG import MultiAPTG
+from MultiHDoC import MultiHDoC
+from MultiTUCB import MultiTUCB
+
 M = 4
 K = 10
 bmmu_1 = [0.1, 0.1, 0.1, 0.35, 0.45, 0.55, 0.65, 0.2, 0.2, 0.2]
@@ -20,4 +24,7 @@ feedbackMatrix = np.random.random(size = [T0, K, M])
 input_matrix = [bmmu_1, bmmu_2, bmmu_3, bmmu_4]
 # print(input_matrix)
 if __name__ == '__main__':
-    TrivialSolver(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
+    resultTrivialSolver = TrivialSolver(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
+    resultAPTG = MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
+    resultHDoC = MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
+    resultOurs = MultiTUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
