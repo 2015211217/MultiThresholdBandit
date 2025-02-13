@@ -12,25 +12,35 @@ def MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
             bmmz[t][m] += feedbackMatrix_copy[t][t][m]
             TiT[t] += 1
     # calculate the estimator
+
     for i in range(K):
-        bmg[i] = np.max(bmmz[i][m] / thresholds[m] for m in range(M))
+        mediate = np.zeros(M)
+        for m in range(M):
+            mediate[m] = bmmz[i][m] / thresholds[m]
+        bmg[i] = np.max(mediate)
 
     # start the algorithm
     for t in range(K, T0):
         # algorithm
-        hati = np.argmax(bmg[i] + np.sqrt(np.log(t) / (2 * TiT[i])) for i in range(K))
+        mediate = np.zeros(K)
+        for i in range(K):
+            mediate[i] = bmg[i] + np.sqrt(np.log(t) / (2 * TiT[i]))
+        hati = np.argmax(mediate)
 
         # receive and update
         for m in range(M):
             bmmz[hati][m] += feedbackMatrix_copy[t][hati][m]
         TiT[hati] += 1
         # only a little update
-        bmg[hati] = np.max(bmmz[hati][m] / thresholds[m] for m in range(M))
+        mediate = np.zeros(M)
+        for m in range(M):
+            mediate[m] = bmmz[hati][m] / thresholds[m]
+        bmg[hati] = np.max(mediate)
 
         # stopping criteria
         for i in range(K):
             if bmg[i] - np.sqrt(np.log(4 * K * np.power(TiT[i], 2) / delta) / (2 * TiT[i])) >= epsilon:
-                return i
+                return t, i
         flag = False
         for i in range(K):
             if bmg[i] + np.sqrt(np.log(4 * K * np.power(TiT[i], 2) / delta) / (2 * TiT[i])) >= epsilon:
@@ -38,4 +48,5 @@ def MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
                 break
         # use -1 to indicate bottom
         if flag:
-            return -1
+            return t, -1
+    return T0, -1
