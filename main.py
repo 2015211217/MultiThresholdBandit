@@ -21,13 +21,23 @@ delta = 0.005
 # hatmu[i][m] = feedbackMatrix[t][i][m]
 T0 = 100000
 # 10 个数据点
-resultTrivialSolver = np.zeros((repetation, plotpoint))
-resultAPTG = np.zeros((repetation, plotpoint))
-resultHDoC = np.zeros((repetation, plotpoint))
-resultOurs = np.zeros((repetation, plotpoint))
+
+GoodArmTrivialSolver = np.zeros((repetation, plotpoint))
+GoodArmAPTG = np.zeros((repetation, plotpoint))
+GoodArmHDoC = np.zeros((repetation, plotpoint))
+GoodArmOurs = np.zeros((repetation, plotpoint))
+deviationTrivialSolver = np.zeros(plotpoint)
+deviationAPTG = np.zeros(plotpoint)
+deviationHDoC = np.zeros(plotpoint)
+deviationOurs = np.zeros(plotpoint)
+stoppingtimeTrivialSolver = np.zeros((repetation, plotpoint))
+stoppingtimeAPTG = np.zeros((repetation, plotpoint))
+stoppingtimeHDoC = np.zeros((repetation, plotpoint))
+stoppingtimeOurs = np.zeros((repetation, plotpoint))
 
 #每个算法十个点， 横轴是delta，纵轴是
 for DeltaMultipler in range(plotpoint):
+
     for round in range(repetation):
         feedbackMatrix = np.random.random(size = [T0, K, M])
         ###form the input matrix
@@ -35,12 +45,21 @@ for DeltaMultipler in range(plotpoint):
         input_matrix = [bmmu_1, bmmu_2, bmmu_3, bmmu_4]
     # print(input_matrix)
         if __name__ == '__main__':
-            resultTrivialSolver[round][repetation] = TrivialSolver(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
-            resultAPTG[round][repetation] = MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
-            resultHDoC[round][repetation] = MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
-            resultOurs[round][repetation] = MultiTUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
-
+            stoppingtimeTrivialSolver[round][DeltaMultipler], GoodArmTrivialSolver[round][DeltaMultipler] = TrivialSolver(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
+            stoppingtimeAPTG[round][DeltaMultipler], GoodArmAPTG[round][DeltaMultipler] = MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
+            stoppingtimeHDoC[round][DeltaMultipler], GoodArmHDoC[round][DeltaMultipler] = MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
+            stoppingtimeOurs[round][DeltaMultipler], GoodArmOurs[round][DeltaMultipler] = MultiTUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
+    #feedback is the round that first good arm is found
+deviationTrivialSolver = np.max(stoppingtimeTrivialSolver, axis=0) - np.min(stoppingtimeTrivialSolver, axis=0)
+deviationAPTG = np.max(stoppingtimeAPTG, axis=0) - np.min(stoppingtimeAPTG, axis=0)
+deviationHDoC = np.max(stoppingtimeHDoC, axis=0) - np.min(stoppingtimeHDoC, axis=0)
+deviationOurs = np.max(stoppingtimeOurs, axis=0) - np.min(stoppingtimeOurs, axis=0)
 #calculate the deviations
 #check the presentation of deviation, should the upper bound and lower bound be the same number?
-deviationTrivialSolver = np.zeros(plotpoint)
-deviationAPTG = np.zeros(plotpoint)
+#计算错误率
+
+
+print(deviationTrivialSolver, stoppingtimeTrivialSolver.mean(axis=0))
+print(deviationAPTG, stoppingtimeAPTG.mean(axis=0))
+print(deviationHDoC, stoppingtimeHDoC.mean(axis=0))
+print(deviationOurs, stoppingtimeOurs.mean(axis=0))
