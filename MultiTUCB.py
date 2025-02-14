@@ -21,7 +21,7 @@ def MultiTUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
     for t in range(K, T0):
         # algorithm
         hati = np.argmin(bmg[i] - np.sqrt( 2 * np.power(sigma, 2) * np.log((np.power(np.pi, 2) * K * M * np.power(TiT[i], 2) )
-                                                                           / (3 * delta)) / TiT[i])  for i in range(K))
+                                                                           / (3 * delta)) / TiT[i]) for i in range(K))
         # receive and update
         for m in range(M):
             bmmz[hati][m] += feedbackMatrix_copy[t][hati][m]

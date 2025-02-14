@@ -15,10 +15,10 @@ bmmu_4 = [0.4, 0.4, 0.4, 0.4, 0.5, 0.5, 0.5, 0.5, 0.6, 0.6]
 
 thresholds = [0.5, 0.7, 0.6, 0.5]
 plotpoint = 10
-sigma = np.random.rand()
+sigma = 1
 epsilon = 0.005
 # hatmu[i][m] = feedbackMatrix[t][i][m]
-T0 = 10
+T0 = 50
 # 10 个数据点
 
 GoodArmTrivialSolver = np.zeros((repetation, plotpoint))
@@ -44,7 +44,7 @@ for DeltaMultipler in range(plotpoint):
     # print(input_matrix)
         stoppingtimeTrivialSolver[round][DeltaMultipler], GoodArmTrivialSolver[round][DeltaMultipler] = TrivialSolver(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
         stoppingtimeAPTG[round][DeltaMultipler], GoodArmAPTG[round][DeltaMultipler] = MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
-        stoppingtimeHDoC[round][DeltaMultipler], GoodArmHDoC[round][DeltaMultipler] = MultiHq zDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
+        stoppingtimeHDoC[round][DeltaMultipler], GoodArmHDoC[round][DeltaMultipler] = MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
         stoppingtimeOurs[round][DeltaMultipler], GoodArmOurs[round][DeltaMultipler] = MultiTUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
         print('round', round, 'with delta',  delta, 'completed')
     #feedback is the round that first good arm is found
@@ -57,11 +57,7 @@ deviationOurs = np.max(stoppingtimeOurs, axis=0) - np.min(stoppingtimeOurs, axis
 #check the presentation of deviation, should the upper bound and lower bound be the same number?
 #计算错误率
 
-f = np.file("GoodArmAuthenticDelta.npy", "wb")
-np.save(f, GoodArmTrivialSolver)
-np.save(f, GoodArmAPTG)
-np.save(f, GoodArmHDoC)
-np.save(f, GoodArmOurs)
+np.savez('../GoodArmAuthenticData', GoodArmTrivialSolver, GoodArmAPTG, GoodArmHDoC, GoodArmOurs)
 
 print(deviationTrivialSolver, stoppingtimeTrivialSolver.mean(axis=0))
 print(deviationAPTG, stoppingtimeAPTG.mean(axis=0))
