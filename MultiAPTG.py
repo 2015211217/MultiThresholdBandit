@@ -13,7 +13,6 @@ def MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
             TiT[t] += 1
     #calculate the estimator
     # bmmz[i][m] / thresholds[m]
-
     for i in range(K):
         mediate = np.zeros(M)
         for m in range(M):
@@ -27,7 +26,6 @@ def MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
         for i in range(K):
             mediate[i] = np.sqrt(TiT[i]) * np.abs(bmg[i])
         hati = np.argmin(mediate)
-
         #receive and update
         for m in range(M):
             bmmz[hati][m] += feedbackMatrix_copy[t][hati][m]

@@ -6,9 +6,8 @@ def TrivialSolver(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
     hatmu = np.zeros((K, M))
     goodarmset = []
     TMediate = np.ceil((8 * np.power(sigma, 2) * np.log(M / delta)) / np.power(epsilon, 2))
-    # if TMediate < T0:
-
-    T0 = TMediate
+    if TMediate < T0:
+        T0 = TMediate
     t = 0
     for i in range(K):
         for t in range(int(T0)):

@@ -68,16 +68,16 @@ deviationLUCB = np.max(stoppingtimeLUCB, axis=0) - np.min(stoppingtimeLUCB, axis
 #calculate the deviations
 #check the presentation of deviation, should the upper bound and lower bound be the same number?
 #计算错误率
-
+print("Algorithm Finished")
 np.savez('../GoodArmAuthenticData', GoodArmTrivialSolver, GoodArmAPTG, GoodArmHDoC, GoodArmOurs)
 
-print(np.max(stoppingtimeTrivialSolver, axis=0), np.min(stoppingtimeTrivialSolver, axis=0))
-print(deviationTrivialSolver, GoodArmTrivialSolver)
-print(np.max(stoppingtimeAPTG, axis=0), np.min(stoppingtimeAPTG, axis=0))
-print(deviationAPTG, GoodArmAPTG)
-print(np.max(stoppingtimeHDoC, axis=0), np.min(stoppingtimeHDoC, axis=0))
-print(deviationHDoC, GoodArmHDoC)
-print(np.max(stoppingtimeLUCB, axis=0), np.min(stoppingtimeLUCB, axis=0))
-print(deviationLUCB, GoodArmLUCB)
-print(np.max(stoppingtimeOurs, axis=0), np.min(stoppingtimeOurs, axis=0))
-print(deviationOurs, GoodArmOurs)
+print(stoppingtimeTrivialSolver, GoodArmTrivialSolver)
+print(stoppingtimeAPTG, GoodArmAPTG)
+print(stoppingtimeHDoC, GoodArmHDoC)
+print(stoppingtimeLUCB, GoodArmLUCB)
+print(stoppingtimeOurs, GoodArmOurs)
+# print(np.max(stoppingtimeTrivialSolver, axis=0), np.min(stoppingtimeTrivialSolver, axis=0))
+# print(np.max(stoppingtimeAPTG, axis=0), np.min(stoppingtimeAPTG, axis=0))
+# print(np.max(stoppingtimeHDoC, axis=0), np.min(stoppingtimeHDoC, axis=0))
+# print(np.max(stoppingtimeLUCB, axis=0), np.min(stoppingtimeLUCB, axis=0))
+# print(np.max(stoppingtimeOurs, axis=0), np.min(stoppingtimeOurs, axis=0))
