@@ -10,15 +10,14 @@ def MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
     for t in range(K):
         for m in range(M):
             bmmz[t][m] += feedbackMatrix_copy[t][t][m]
-            TiT[t] += 1
+        TiT[t] += 1
     #calculate the estimator
     # bmmz[i][m] / thresholds[m]
     for i in range(K):
         mediate = np.zeros(M)
         for m in range(M):
-            mediate[m] = bmmz[i][m] / thresholds[m]
+            mediate[m] = thresholds[m] - (bmmz[i][m] / TiT[i])
         bmg[i] = np.max(mediate)
-
     #start the algorithm
     for t in range(K, T0):
         #algorithm
@@ -30,20 +29,20 @@ def MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
         for m in range(M):
             bmmz[hati][m] += feedbackMatrix_copy[t][hati][m]
         TiT[hati] += 1
-        #only a little update
-        mediate = np.zeros(M)
+        #update hatbmg for hati
+        mediate2 = np.zeros(M)
         for m in range(M):
-            mediate[m] = bmmz[hati][m] / thresholds[m]
-        bmg[hati] = np.max(mediate)
+            mediate2[m] = thresholds[m] - (bmmz[hati][m] / TiT[hati])
+        bmg[hati] = np.max(mediate2)
 
         #stopping criteria
         for i in range(K):
-            if bmg[i] - np.sqrt(np.log(4 * K * np.power(TiT[i], 2) / delta) / (2 * TiT[i])) >= epsilon:
+            if bmg[i] + np.sqrt(np.log((4 * np.power(sigma, 2) * K * np.power(TiT[i], 2)) / delta) / (2 * TiT[i])) <= epsilon:
                 return t, i
-        flag = False
+        flag = True
         for i in range(K):
-            if bmg[i] + np.sqrt(np.log(4 * K * np.power(TiT[i], 2) / delta) / (2 * TiT[i])) >= epsilon:
-                flag = True
+            if bmg[i] - np.sqrt(np.log((4 * np.power(sigma,2) * K * np.power(TiT[i], 2)) / delta) / (2 * TiT[i])) <= epsilon:
+                flag = False
                 break
         #use -1 to indicate bottom
         if flag:

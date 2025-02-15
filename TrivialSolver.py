@@ -23,7 +23,7 @@ def TrivialSolver(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
                 flag = False
         if flag:
             # goodarmset.append(i)
-            return t, i
-    return T0, -1
+            return t + T0 * (i + 1), i
+    return K * T0, -1
 
 

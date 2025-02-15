@@ -4,6 +4,7 @@ from MultiAPTG import MultiAPTG
 from MultiHDoC import MultiHDoC
 from MultiTUCB import MultiTUCB
 from MultiLUCB import MultiLUCB
+import copy
 M = 4
 K = 10
 
@@ -16,7 +17,7 @@ bmmu_4 = [0.4, 0.4, 0.4, 0.4, 0.5, 0.5, 0.5, 0.5, 0.6, 0.6]
 
 thresholds = [0.5, 0.7, 0.6, 0.5]
 plotpoint = 10
-repetation = 50
+repetation = 1
 #注意修改
 sigma = 1
 epsilon = 0.005
@@ -50,11 +51,17 @@ for DeltaMultipler in range(plotpoint):
         ###form the input matrix
         input_matrix = [bmmu_1, bmmu_2, bmmu_3, bmmu_4]
     # print(input_matrix)
-        stoppingtimeTrivialSolver[round][DeltaMultipler], GoodArmTrivialSolver[round][DeltaMultipler] = TrivialSolver(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
-        stoppingtimeAPTG[round][DeltaMultipler], GoodArmAPTG[round][DeltaMultipler] = MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
-        stoppingtimeHDoC[round][DeltaMultipler], GoodArmHDoC[round][DeltaMultipler] = MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
-        stoppingtimeOurs[round][DeltaMultipler], GoodArmOurs[round][DeltaMultipler] = MultiTUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
-        stoppingtimeLUCB[round][DeltaMultipler], GoodArmOurs[round][DeltaMultipler] = MultiLUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds)
+        feedbackMatrix_copy1 = copy.deepcopy(feedbackMatrix)
+        feedbackMatrix_copy2 = copy.deepcopy(feedbackMatrix)
+        feedbackMatrix_copy3 = copy.deepcopy(feedbackMatrix)
+        feedbackMatrix_copy4 = copy.deepcopy(feedbackMatrix)
+        feedbackMatrix_copy5 = copy.deepcopy(feedbackMatrix)
+
+        stoppingtimeTrivialSolver[round][DeltaMultipler], GoodArmTrivialSolver[round][DeltaMultipler] = TrivialSolver(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy1, thresholds)
+        stoppingtimeAPTG[round][DeltaMultipler], GoodArmAPTG[round][DeltaMultipler] = MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy2, thresholds)
+        stoppingtimeHDoC[round][DeltaMultipler], GoodArmHDoC[round][DeltaMultipler] = MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy3, thresholds)
+        stoppingtimeOurs[round][DeltaMultipler], GoodArmOurs[round][DeltaMultipler] = MultiTUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy4, thresholds)
+        stoppingtimeLUCB[round][DeltaMultipler], GoodArmLUCB[round][DeltaMultipler] = MultiLUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy5, thresholds)
 
         print('round', round, 'with delta',  delta, 'completed')
     #feedback is the round that first good arm is found
