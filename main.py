@@ -8,21 +8,24 @@ import copy
 M = 4
 K = 10
 
-# -1 tester
+#correct tester
 bmmu_1 = [0.1, 0.1, 0.1, 0.35, 0.45, 0.55, 0.65, 0.2, 0.2, 0.2]
-bmmu_2 = [0.2, round(0.4 - np.power(0.2, 2), 6), round(0.4 - np.power(0.2, 3), 6),round(0.4 - np.power(0.2, 4), 6)
-    , 0.45, 0.55, round(0.6 + np.power(0.1, 4), 6), 0.6 + round(np.power(0.1, 3), 6), round(0.6 + np.power(0.1, 2), 6), round(0.6 + np.power(0.1, 1), 6)]
+bmmu_2 = [0.2, round(0.4 - np.power(0.2, 2), 6), round(0.4 - np.power(0.2, 3), 6), round(0.4 - np.power(0.2, 4), 6), round(0.4 - np.power(0.2, 4), 6)
+    , 0.45, 0.55, 0.6 + round(np.power(0.1, 3), 6), round(0.6 + np.power(0.1, 2), 6), round(0.6 + np.power(0.1, 1), 6)]
 bmmu_3 = [0.05, 0.1, 0.15, 0.2, 0.45, 0.55, 0.65, 0.7, 0.75, 0.8]
-bmmu_4 = [0.4, 0.4, 0.4, 0.4, 0.5, 0.5, 0.5, 0.5, 0.6, 0.6]
+bmmu_4 = [0.5, 0.5, 0.5, 0.5, 0.6, 0.6, 0.6, 0.6, 0.7, 0.7]
+goodarmIndex = 6
+thresholds = [0.6, 0.5, 0.6, 0.5]
+# thresholds = [0.2, 0.2, 0.2, 0.2]
 
-thresholds = [0.5, 0.7, 0.6, 0.5]
 plotpoint = 10
 repetation = 1
-#注意修改
-sigma = 1
+#for simplicity, we assume sigma is the same for every objective
+sigma = 1.0
+
 epsilon = 0.005
 # hatmu[i][m] = feedbackMatrix[t][i][m]
-T0 = 10000
+T0 = 50000
 # 10 个数据点
 
 GoodArmTrivialSolver = np.zeros((repetation, plotpoint))
@@ -41,15 +44,27 @@ stoppingtimeAPTG = np.zeros((repetation, plotpoint))
 stoppingtimeHDoC = np.zeros((repetation, plotpoint))
 stoppingtimeOurs = np.zeros((repetation, plotpoint))
 stoppingtimeLUCB = np.zeros((repetation, plotpoint))
+countFailureTrivialSolver = 0
+countFailureHDoC = 0
+countFailureAPTG = 0
+countFailureLUCB = 0
+countFailureOurs = 0
 
-feedbackMatrix = np.random.random(size=[T0, K, M])
+input_matrix = [bmmu_1, bmmu_2, bmmu_3, bmmu_4]
+#feedback matrix 写的不对，应该按照给出的平均值来写
+#所有回合使用的是一样的输入（目前），所以输入数据放在前面生成
+feedbackMatrix = np.zeros((T0, K, M))
+for t in range(T0):
+    for i in range(K):
+        for m in range(M):
+            feedbackMatrix[t][i][m] = np.random.normal(input_matrix[m][i], sigma)
 
 #每个算法十个点， 横轴是delta，纵轴是
 for DeltaMultipler in range(plotpoint):
     delta = 0.005 * (DeltaMultipler + 1)
+
     for round in range(repetation):
         ###form the input matrix
-        input_matrix = [bmmu_1, bmmu_2, bmmu_3, bmmu_4]
     # print(input_matrix)
         feedbackMatrix_copy1 = copy.deepcopy(feedbackMatrix)
         feedbackMatrix_copy2 = copy.deepcopy(feedbackMatrix)
@@ -62,7 +77,16 @@ for DeltaMultipler in range(plotpoint):
         stoppingtimeHDoC[round][DeltaMultipler], GoodArmHDoC[round][DeltaMultipler] = MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy3, thresholds)
         stoppingtimeOurs[round][DeltaMultipler], GoodArmOurs[round][DeltaMultipler] = MultiTUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy4, thresholds)
         stoppingtimeLUCB[round][DeltaMultipler], GoodArmLUCB[round][DeltaMultipler] = MultiLUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy5, thresholds)
-
+        if GoodArmTrivialSolver[round][DeltaMultipler] != goodarmIndex:
+            countFailureTrivialSolver += 1
+        if GoodArmAPTG[round][DeltaMultipler] != goodarmIndex:
+            countFailureAPTG += 1
+        if GoodArmHDoC[round][DeltaMultipler] != goodarmIndex:
+            countFailureHDoC += 1
+        if GoodArmLUCB[round][DeltaMultipler] != goodarmIndex:
+            countFailureLUCB += 1
+        if GoodArmOurs[round][DeltaMultipler] != goodarmIndex:
+            countFailureOurs += 1
         print('round', round, 'with delta',  delta, 'completed')
     #feedback is the round that first good arm is found
 
@@ -76,15 +100,23 @@ deviationLUCB = np.max(stoppingtimeLUCB, axis=0) - np.min(stoppingtimeLUCB, axis
 #check the presentation of deviation, should the upper bound and lower bound be the same number?
 #计算错误率
 print("Algorithm Finished")
-np.savez('../GoodArmAuthenticData', GoodArmTrivialSolver, GoodArmAPTG, GoodArmHDoC, GoodArmOurs)
+# np.savez('../GoodArmAuthenticData', GoodArmTrivialSolver, GoodArmAPTG, GoodArmHDoC, GoodArmOurs)
 
 print(stoppingtimeTrivialSolver, GoodArmTrivialSolver)
 print(stoppingtimeAPTG, GoodArmAPTG)
 print(stoppingtimeHDoC, GoodArmHDoC)
 print(stoppingtimeLUCB, GoodArmLUCB)
 print(stoppingtimeOurs, GoodArmOurs)
-# print(np.max(stoppingtimeTrivialSolver, axis=0), np.min(stoppingtimeTrivialSolver, axis=0))
-# print(np.max(stoppingtimeAPTG, axis=0), np.min(stoppingtimeAPTG, axis=0))
-# print(np.max(stoppingtimeHDoC, axis=0), np.min(stoppingtimeHDoC, axis=0))
-# print(np.max(stoppingtimeLUCB, axis=0), np.min(stoppingtimeLUCB, axis=0))
-# print(np.max(stoppingtimeOurs, axis=0), np.min(stoppingtimeOurs, axis=0))
+print("Deviation part")
+print(np.max(stoppingtimeTrivialSolver, axis=0), np.min(stoppingtimeTrivialSolver, axis=0))
+print(np.max(stoppingtimeAPTG, axis=0), np.min(stoppingtimeAPTG, axis=0))
+print(np.max(stoppingtimeHDoC, axis=0), np.min(stoppingtimeHDoC, axis=0))
+print(np.max(stoppingtimeLUCB, axis=0), np.min(stoppingtimeLUCB, axis=0))
+print(np.max(stoppingtimeOurs, axis=0), np.min(stoppingtimeOurs, axis=0))
+print("Failure Count")
+print(countFailureTrivialSolver)
+print(countFailureAPTG)
+print(countFailureHDoC)
+print(countFailureLUCB)
+print(countFailureOurs)
+
