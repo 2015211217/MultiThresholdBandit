@@ -3,7 +3,7 @@ from TrivialSolver import TrivialSolver
 from MultiAPTG import MultiAPTG
 from MultiHDoC import MultiHDoC
 from MultiTUCB import MultiTUCB
-from MultiLUCB import MultiLUCB
+from MultiAPE import MultiAPE
 import copy
 M = 4
 K = 10
@@ -32,22 +32,22 @@ GoodArmTrivialSolver = np.zeros((repetation, plotpoint))
 GoodArmAPTG = np.zeros((repetation, plotpoint))
 GoodArmHDoC = np.zeros((repetation, plotpoint))
 GoodArmOurs = np.zeros((repetation, plotpoint))
-GoodArmLUCB = np.zeros((repetation, plotpoint))
+GoodArmAPE = np.zeros((repetation, plotpoint))
 
 deviationTrivialSolver = np.zeros(plotpoint)
 deviationAPTG = np.zeros(plotpoint)
 deviationHDoC = np.zeros(plotpoint)
 deviationOurs = np.zeros(plotpoint)
-deviationLUCB = np.zeros(plotpoint)
+deviationAPE = np.zeros(plotpoint)
 stoppingtimeTrivialSolver = np.zeros((repetation, plotpoint))
 stoppingtimeAPTG = np.zeros((repetation, plotpoint))
 stoppingtimeHDoC = np.zeros((repetation, plotpoint))
 stoppingtimeOurs = np.zeros((repetation, plotpoint))
-stoppingtimeLUCB = np.zeros((repetation, plotpoint))
+stoppingtimeAPE = np.zeros((repetation, plotpoint))
 countFailureTrivialSolver = 0
 countFailureHDoC = 0
 countFailureAPTG = 0
-countFailureLUCB = 0
+countFailureAPE = 0
 countFailureOurs = 0
 
 input_matrix = [bmmu_1, bmmu_2, bmmu_3, bmmu_4]
@@ -76,15 +76,15 @@ for DeltaMultipler in range(plotpoint):
         stoppingtimeAPTG[round][DeltaMultipler], GoodArmAPTG[round][DeltaMultipler] = MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy2, thresholds)
         stoppingtimeHDoC[round][DeltaMultipler], GoodArmHDoC[round][DeltaMultipler] = MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy3, thresholds)
         stoppingtimeOurs[round][DeltaMultipler], GoodArmOurs[round][DeltaMultipler] = MultiTUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy4, thresholds)
-        stoppingtimeLUCB[round][DeltaMultipler], GoodArmLUCB[round][DeltaMultipler] = MultiLUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy5, thresholds)
+        stoppingtimeAPE[round][DeltaMultipler], GoodArmAPE[round][DeltaMultipler] = MultiAPE(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy5, thresholds)
         if GoodArmTrivialSolver[round][DeltaMultipler] != goodarmIndex:
             countFailureTrivialSolver += 1
         if GoodArmAPTG[round][DeltaMultipler] != goodarmIndex:
             countFailureAPTG += 1
         if GoodArmHDoC[round][DeltaMultipler] != goodarmIndex:
             countFailureHDoC += 1
-        if GoodArmLUCB[round][DeltaMultipler] != goodarmIndex:
-            countFailureLUCB += 1
+        if GoodArmAPE[round][DeltaMultipler] != goodarmIndex:
+            countFailureAPE += 1
         if GoodArmOurs[round][DeltaMultipler] != goodarmIndex:
             countFailureOurs += 1
         print('round', round, 'with delta',  delta, 'completed')
@@ -94,7 +94,7 @@ deviationTrivialSolver = np.max(stoppingtimeTrivialSolver, axis=0) - np.min(stop
 deviationAPTG = np.max(stoppingtimeAPTG, axis=0) - np.min(stoppingtimeAPTG, axis=0)
 deviationHDoC = np.max(stoppingtimeHDoC, axis=0) - np.min(stoppingtimeHDoC, axis=0)
 deviationOurs = np.max(stoppingtimeOurs, axis=0) - np.min(stoppingtimeOurs, axis=0)
-deviationLUCB = np.max(stoppingtimeLUCB, axis=0) - np.min(stoppingtimeLUCB, axis=0)
+deviationAPE = np.max(stoppingtimeAPE, axis=0) - np.min(stoppingtimeAPE, axis=0)
 
 #calculate the deviations
 #check the presentation of deviation, should the upper bound and lower bound be the same number?
@@ -105,18 +105,18 @@ print("Algorithm Finished")
 print(stoppingtimeTrivialSolver, GoodArmTrivialSolver)
 print(stoppingtimeAPTG, GoodArmAPTG)
 print(stoppingtimeHDoC, GoodArmHDoC)
-print(stoppingtimeLUCB, GoodArmLUCB)
+print(stoppingtimeAPE, GoodArmAPE)
 print(stoppingtimeOurs, GoodArmOurs)
 print("Deviation part")
 print(np.max(stoppingtimeTrivialSolver, axis=0), np.min(stoppingtimeTrivialSolver, axis=0))
 print(np.max(stoppingtimeAPTG, axis=0), np.min(stoppingtimeAPTG, axis=0))
 print(np.max(stoppingtimeHDoC, axis=0), np.min(stoppingtimeHDoC, axis=0))
-print(np.max(stoppingtimeLUCB, axis=0), np.min(stoppingtimeLUCB, axis=0))
+print(np.max(stoppingtimeAPE, axis=0), np.min(stoppingtimeAPE, axis=0))
 print(np.max(stoppingtimeOurs, axis=0), np.min(stoppingtimeOurs, axis=0))
 print("Failure Count")
 print(countFailureTrivialSolver)
 print(countFailureAPTG)
 print(countFailureHDoC)
-print(countFailureLUCB)
+print(countFailureAPE)
 print(countFailureOurs)
 
