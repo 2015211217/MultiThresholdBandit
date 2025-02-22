@@ -24,7 +24,7 @@ def MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
         # algorithm
         mediate = np.zeros(K)
         for i in range(K):
-            mediate[i] = bmg[i] - np.sqrt((np.power(sigma, 2) * np.log(t)) / (2 * TiT[i]))
+            mediate[i] = bmg[i] - np.sqrt((np.log(t)) / (2 * TiT[i]))
         hati = np.argmin(mediate)
 
         # receive and update
@@ -39,11 +39,11 @@ def MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
 
         # stopping criteria
         for i in range(K):
-            if bmg[i] + np.sqrt(np.log((4 * np.power(sigma, 2) * M* K * np.power(TiT[i], 2)) / delta) / (2 * TiT[i])) <= epsilon:
+            if bmg[i] + np.sqrt((2 * np.power(sigma, 2) * np.log((4 * M * K * np.power(TiT[i], 2))) / delta) / (2 * TiT[i])) <= epsilon:
                 return t, i
         flag = True
         for i in range(K):
-            if bmg[i] - np.sqrt(np.log((4 * np.power(sigma, 2) *  M*K * np.power(TiT[i], 2)) / delta) / (2 * TiT[i])) <= epsilon:
+            if bmg[i] - np.sqrt((2 * np.power(sigma, 2) * np.log((4 * M * K * np.power(TiT[i], 2)) / delta)) / (2 * TiT[i])) <= epsilon:
                 flag = False
                 break
         #use -1 to indicate bottom

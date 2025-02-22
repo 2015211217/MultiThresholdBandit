@@ -1,7 +1,7 @@
 import numpy as np
 import copy
 
-def MultiAPE(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
+def MultiLUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
     feedbackMatrix_copy = copy.deepcopy(feedbackMatrix)
     # pull each arm once
     bmmz = np.zeros((K, M))
@@ -51,5 +51,4 @@ def MultiAPE(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
         #use -1 to indicate bottom
         if flag:
             return t, -1
-
     return T0, -1

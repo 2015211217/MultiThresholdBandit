@@ -36,16 +36,27 @@ def MultiTUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
         bmg[hati] = np.max(mediate2)
 
         # stopping criteria
+
+        # for i in range(K):
+        #     if bmg[i] + np.sqrt(np.log((4 * np.power(sigma, 2) * M * K * np.power(TiT[i], 2)) / delta) / (2 * TiT[i])) <= epsilon:
+        #         return t, i
+        # flag = True
+        # for i in range(K):
+        #     if bmg[i] - np.sqrt(np.log((4 * np.power(sigma, 2) * M * K * np.power(TiT[i], 2)) / delta) / (2 * TiT[i])) <= epsilon:
+        #         flag = False
+        #         break
+
         for i in range(K):
             if bmg[i] + np.sqrt((2 * np.power(sigma, 2) * np.log((np.power(np.pi, 2) * M * K * np.power(TiT[i], 2))
-                                                                           /(3 * delta))) / TiT[i]) <= epsilon:
+                                                                           / (3 * delta))) / TiT[i]) <= epsilon:
                 return t, i
         flag = True
         for i in range(K):
-            if bmg[i] <= np.sqrt((2 * np.power(sigma, 2) * np.log((np.power(np.pi, 2) * M * K * np.power(TiT[i], 2) )
+            if bmg[i] <= np.sqrt((2 * np.power(sigma, 2) * np.log((np.power(np.pi, 2) * M * K * np.power(TiT[i], 2))
                                                                            /(3 * delta))) / TiT[i]):
                 flag = False
                 break
+
         # use -1 to indicate bottom
         if flag:
             return t, -1
