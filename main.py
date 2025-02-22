@@ -7,6 +7,11 @@ from MultiAPE import MultiAPE
 import copy
 M = 4
 K = 10
+plotpoint = 10
+repetation = 10
+sigma = 1.0
+T0 = 50000
+epsilon = 0.005
 
 #correct tester
 bmmu_1 = [0.1, 0.1, 0.1, 0.35, 0.45, 0.55, 0.65, 0.2, 0.2, 0.2]
@@ -17,16 +22,19 @@ bmmu_4 = [0.5, 0.5, 0.5, 0.5, 0.6, 0.6, 0.6, 0.6, 0.7, 0.7]
 goodarmIndex = 6
 thresholds = [0.6, 0.5, 0.6, 0.5]
 # thresholds = [0.2, 0.2, 0.2, 0.2]
+#decide a good arm set
+input_matrix = [bmmu_1, bmmu_2, bmmu_3, bmmu_4]
+goodset = []
+for i in range(K):
+    flag = True
+    for m in range(M):
+        if input_matrix[m][i] < thresholds[m]:
+            flag = False
+            break
+    if flag:
+        goodset.append(i)
 
-plotpoint = 10
-repetation = 1
-#for simplicity, we assume sigma is the same for every objective
-sigma = 1.0
-
-epsilon = 0.005
-# hatmu[i][m] = feedbackMatrix[t][i][m]
-T0 = 50000
-# 10 个数据点
+ErrorCount = np.zeros(4)
 
 GoodArmTrivialSolver = np.zeros((repetation, plotpoint))
 GoodArmAPTG = np.zeros((repetation, plotpoint))
@@ -44,13 +52,7 @@ stoppingtimeAPTG = np.zeros((repetation, plotpoint))
 stoppingtimeHDoC = np.zeros((repetation, plotpoint))
 stoppingtimeOurs = np.zeros((repetation, plotpoint))
 stoppingtimeAPE = np.zeros((repetation, plotpoint))
-countFailureTrivialSolver = 0
-countFailureHDoC = 0
-countFailureAPTG = 0
-countFailureAPE = 0
-countFailureOurs = 0
 
-input_matrix = [bmmu_1, bmmu_2, bmmu_3, bmmu_4]
 #feedback matrix 写的不对，应该按照给出的平均值来写
 #所有回合使用的是一样的输入（目前），所以输入数据放在前面生成
 feedbackMatrix = np.zeros((T0, K, M))
@@ -78,15 +80,15 @@ for DeltaMultipler in range(plotpoint):
         stoppingtimeOurs[round][DeltaMultipler], GoodArmOurs[round][DeltaMultipler] = MultiTUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy4, thresholds)
         stoppingtimeAPE[round][DeltaMultipler], GoodArmAPE[round][DeltaMultipler] = MultiAPE(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy5, thresholds)
         if GoodArmTrivialSolver[round][DeltaMultipler] != goodarmIndex:
-            countFailureTrivialSolver += 1
+            ErrorCount[0] += 1
         if GoodArmAPTG[round][DeltaMultipler] != goodarmIndex:
-            countFailureAPTG += 1
+            ErrorCount[1] += 1
         if GoodArmHDoC[round][DeltaMultipler] != goodarmIndex:
-            countFailureHDoC += 1
+            ErrorCount[2] += 1
         if GoodArmAPE[round][DeltaMultipler] != goodarmIndex:
-            countFailureAPE += 1
+            ErrorCount[3] += 1
         if GoodArmOurs[round][DeltaMultipler] != goodarmIndex:
-            countFailureOurs += 1
+            ErrorCount[4] += 1
         print('round', round, 'with delta',  delta, 'completed')
     #feedback is the round that first good arm is found
 
@@ -114,9 +116,5 @@ print(np.max(stoppingtimeHDoC, axis=0), np.min(stoppingtimeHDoC, axis=0))
 print(np.max(stoppingtimeAPE, axis=0), np.min(stoppingtimeAPE, axis=0))
 print(np.max(stoppingtimeOurs, axis=0), np.min(stoppingtimeOurs, axis=0))
 print("Failure Count")
-print(countFailureTrivialSolver)
-print(countFailureAPTG)
-print(countFailureHDoC)
-print(countFailureAPE)
-print(countFailureOurs)
+print(ErrorCount)
 
