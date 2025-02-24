@@ -14,7 +14,7 @@ bmmu_2 = [0.5, 0.7, 1.6, 1.8, 1.2, 1.0, 0.6]
 thresholds = [0.5, 1.2]
 #for simplicity, we assume sigma is the same for every objective
 sigma = 1.0
-repetation = 50
+repetation = 100
 plotpoint = 10
 delta = 0.005
 # hatmu[i][m] = feedbackMatrix[t][i][m]
@@ -55,24 +55,28 @@ stoppingtimeLUCB = np.zeros((repetation, plotpoint))
 
 #feedback matrix 写的不对，应该按照给出的平均值来写
 #所有回合使用的是一样的输入（目前），所以输入数据放在前面生成
-feedbackMatrix = np.zeros((T0, K, M))
-for t in range(T0):
-    for i in range(K):
-        for m in range(M):
-            feedbackMatrix[t][i][m] = np.random.normal(input_matrix[m][i], sigma)
+feedbackMatrix = np.zeros((repetation, T0, K, M))
+for repe in range(repetation):
+    for t in range(T0):
+    # np.random.seed(t)
+        for i in range(K):
+            for m in range(M):
+                feedbackMatrix[repe][t][i][m] = np.random.normal(loc=input_matrix[m][i], scale=sigma)
 
 #每个算法十个点， 横轴是delta，纵轴是
 for DeltaMultipler in range(plotpoint):
     epsilon = 0.002 * (DeltaMultipler + 1)
     for round in range(repetation):
-        ###form the input matrix
-    # print(input_matrix)
+        feedbackMatrix = np.zeros((T0, K, M))
+        for t in range(T0):
+            for i in range(K):
+                for m in range(M):
+                    feedbackMatrix[t][i][m] = np.random.normal(loc=input_matrix[m][i], scale=sigma)
         feedbackMatrix_copy1 = copy.deepcopy(feedbackMatrix)
         feedbackMatrix_copy2 = copy.deepcopy(feedbackMatrix)
         feedbackMatrix_copy3 = copy.deepcopy(feedbackMatrix)
         feedbackMatrix_copy4 = copy.deepcopy(feedbackMatrix)
         feedbackMatrix_copy5 = copy.deepcopy(feedbackMatrix)
-
         # stoppingtimeTrivialSolver[round][DeltaMultipler], GoodArmTrivialSolver[round][DeltaMultipler] = TrivialSolver(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy1, thresholds)
         stoppingtimeAPTG[round][DeltaMultipler], GoodArmAPTG[round][DeltaMultipler] = MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy2, thresholds)
         stoppingtimeHDoC[round][DeltaMultipler], GoodArmHDoC[round][DeltaMultipler] = MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy3, thresholds)
@@ -81,13 +85,13 @@ for DeltaMultipler in range(plotpoint):
         # if stoppingtimeTrivialSolver[round][DeltaMultipler] == T0:
         #     stoppingtimeTrivialSolver[round][DeltaMultipler] = - (2 * T0)
         if stoppingtimeAPTG[round][DeltaMultipler] == T0:
-            stoppingtimeAPTG[round][DeltaMultipler] = - (2 * T0)
+            stoppingtimeAPTG[round][DeltaMultipler] = - 1
         if stoppingtimeHDoC[round][DeltaMultipler] == T0:
-            stoppingtimeHDoC[round][DeltaMultipler] = - (2 * T0)
+            stoppingtimeHDoC[round][DeltaMultipler] = - 1
         if stoppingtimeLUCB[round][DeltaMultipler] == T0:
-            stoppingtimeLUCB[round][DeltaMultipler] = - (2 * T0)
+            stoppingtimeLUCB[round][DeltaMultipler] = - 1
         if stoppingtimeOurs[round][DeltaMultipler] == T0:
-            stoppingtimeOurs[round][DeltaMultipler] = - (2 * T0)
+            stoppingtimeOurs[round][DeltaMultipler] = - 1
 
         # if GoodArmTrivialSolver[round][DeltaMultipler] not in goodset:
         #     ErrorCount[0] += 1
@@ -99,38 +103,47 @@ for DeltaMultipler in range(plotpoint):
             ErrorCount[3][DeltaMultipler] += 1
         if GoodArmOurs[round][DeltaMultipler] not in goodset:
             ErrorCount[4][DeltaMultipler] += 1
-        print('round', round, 'with delta',  delta, 'completed')
+        print('round', round, 'with epsilon',  epsilon, 'completed')
+        print("--------------------------------------------")
+        print(stoppingtimeAPTG[round])
+        print("--------------------------------------------")
+        print(stoppingtimeHDoC[round])
+        print("--------------------------------------------")
+        print(stoppingtimeLUCB[round])
+        print("--------------------------------------------")
+        print(stoppingtimeOurs[round])
+        print("--------------------------------------------")
     #feedback is the round that first good arm is found
 
 # deviationTrivialSolver = np.max(stoppingtimeTrivialSolver, axis=0) - np.min(stoppingtimeTrivialSolver, axis=0)
 AbstoppingtimeAPTG = stoppingtimeAPTG
-for t in range(repetation):
-    for i in range(plotpoint):
-        if AbstoppingtimeAPTG[t][i] < 0:
-            AbstoppingtimeAPTG[t][i] = np.max(stoppingtimeAPTG, axis=0)
-
-deviationAPTG = np.max(stoppingtimeAPTG, axis=0) - np.min(AbstoppingtimeAPTG, axis=0)
+for i in range(plotpoint):
+    for t in range(repetation):
+        #failure case
+        if stoppingtimeAPTG[t][i] == -1:
+            AbstoppingtimeAPTG[t][i] = np.max(stoppingtimeAPTG, axis=0)[i]
+    deviationAPTG[i] = np.max(stoppingtimeAPTG, axis=0)[i] - np.min(AbstoppingtimeAPTG, axis=0)[i]
 
 AbstoppingtimeHDoC = stoppingtimeHDoC
-for t in range(repetation):
-    for i in range(plotpoint):
+for i in range(plotpoint):
+    for t in range(repetation):
         if AbstoppingtimeHDoC[t][i] < 0:
-            AbstoppingtimeHDoC[t][i] = np.max(stoppingtimeHDoC, axis=0)
-deviationHDoC = np.max(stoppingtimeHDoC, axis=0) - np.min(AbstoppingtimeHDoC, axis=0)
+            AbstoppingtimeHDoC[t][i] = np.max(stoppingtimeHDoC, axis=0)[i]
+    deviationHDoC[i] = np.max(stoppingtimeHDoC, axis=0)[i] - np.min(AbstoppingtimeHDoC, axis=0)[i]
 
 AbstoppingtimeLUCB = stoppingtimeLUCB
-for t in range(repetation):
-    for i in range(plotpoint):
+for i in range(plotpoint):
+    for t in range(repetation):
         if AbstoppingtimeLUCB[t][i] < 0:
-            AbstoppingtimeLUCB[t][i] = np.max(stoppingtimeLUCB, axis=0)
-deviationLUCB = np.max(stoppingtimeLUCB, axis=0) - np.min(AbstoppingtimeLUCB, axis=0)
+            AbstoppingtimeLUCB[t][i] = np.max(stoppingtimeLUCB, axis=0)[i]
+    deviationLUCB[i] = np.max(stoppingtimeLUCB, axis=0)[i] - np.min(AbstoppingtimeLUCB, axis=0)[i]
 
 AbstoppingtimeOurs = stoppingtimeOurs
-for t in range(repetation):
-    for i in range(plotpoint):
+for i in range(plotpoint):
+    for t in range(repetation):
         if AbstoppingtimeOurs[t][i] < 0:
-            AbstoppingtimeOurs[t][i] = np.max(stoppingtimeOurs, axis=0)
-deviationOurs = np.max(stoppingtimeOurs, axis=0) - np.min(AbstoppingtimeOurs, axis=0)
+            AbstoppingtimeOurs[t][i] = np.max(stoppingtimeOurs, axis=0)[i]
+    deviationOurs[i] = np.max(stoppingtimeOurs, axis=0)[i] - np.min(AbstoppingtimeOurs, axis=0)[i]
 
 #calculate the deviations
 #check the presentation of deviation, should the upper bound and lower bound be the same number?
@@ -182,21 +195,23 @@ for i in range(plotpoint):
         sumOurs = sumStoppingtime(stoppingtimeOurs, repetation, plotpoint)
         averageStoppingtimeOurs[i] = sumOurs[i] / int(repetation - ErrorCount[4][i])
 
+print("--------------------------------------------")
 print("Average stopping time")
 print(averageStoppingtimeAPTG)
 print(averageStoppingtimeHDoC)
 print(averageStoppingtimeLUCB)
 print(averageStoppingtimeOurs)
-
+print("--------------------------------------------")
 print("Deviation part")
 print(deviationAPTG)
 print(deviationHDoC)
 print(deviationLUCB)
 print(deviationOurs)
-
+print("--------------------------------------------")
 print("Failure Count")
 print(ErrorCount)
 
+print("--------------------------------------------")
 print("All founded good arms")
 print(GoodArmAPTG)
 print(GoodArmHDoC)
