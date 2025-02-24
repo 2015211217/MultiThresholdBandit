@@ -8,9 +8,9 @@ import copy
 M = 4
 K = 10
 plotpoint = 10
-repetation = 1
+repetation = 50
 sigma = 1.2
-T0 = 100000
+T0 = 200000
 epsilon = 0.005
 
 #correct tester
@@ -34,8 +34,7 @@ for i in range(K):
     if flag:
         goodset.append(i)
 
-ErrorCount = np.zeros(5)
-
+ErrorCount = np.zeros((5, plotpoint))
 GoodArmTrivialSolver = np.zeros((repetation, plotpoint))
 GoodArmAPTG = np.zeros((repetation, plotpoint))
 GoodArmHDoC = np.zeros((repetation, plotpoint))
@@ -57,6 +56,7 @@ stoppingtimeLUCB = np.zeros((repetation, plotpoint))
 #所有回合使用的是一样的输入（目前），所以输入数据放在前面生成
 feedbackMatrix = np.zeros((T0, K, M))
 for t in range(T0):
+    np.random.seed(t)
     for i in range(K):
         for m in range(M):
             feedbackMatrix[t][i][m] = np.random.normal(input_matrix[m][i], sigma)
@@ -78,24 +78,59 @@ for DeltaMultipler in range(plotpoint):
         stoppingtimeHDoC[round][DeltaMultipler], GoodArmHDoC[round][DeltaMultipler] = MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy3, thresholds)
         stoppingtimeOurs[round][DeltaMultipler], GoodArmOurs[round][DeltaMultipler] = MultiTUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy4, thresholds)
         stoppingtimeLUCB[round][DeltaMultipler], GoodArmLUCB[round][DeltaMultipler] = MultiLUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy5, thresholds)
+        # if stoppingtimeTrivialSolver[round][DeltaMultipler] == T0:
+        #     stoppingtimeTrivialSolver[round][DeltaMultipler] = - (2 * T0)
+        if stoppingtimeAPTG[round][DeltaMultipler] == T0:
+            stoppingtimeAPTG[round][DeltaMultipler] = - (2 * T0)
+        if stoppingtimeHDoC[round][DeltaMultipler] == T0:
+            stoppingtimeHDoC[round][DeltaMultipler] = - (2 * T0)
+        if stoppingtimeLUCB[round][DeltaMultipler] == T0:
+            stoppingtimeLUCB[round][DeltaMultipler] = - (2 * T0)
+        if stoppingtimeOurs[round][DeltaMultipler] == T0:
+            stoppingtimeOurs[round][DeltaMultipler] = - (2 * T0)
+
         # if GoodArmTrivialSolver[round][DeltaMultipler] not in goodset:
         #     ErrorCount[0] += 1
         if GoodArmAPTG[round][DeltaMultipler] not in goodset:
-            ErrorCount[1] += 1
+            ErrorCount[1][DeltaMultipler] += 1
         if GoodArmHDoC[round][DeltaMultipler] not in goodset:
-            ErrorCount[2] += 1
+            ErrorCount[2][DeltaMultipler] += 1
         if GoodArmLUCB[round][DeltaMultipler] not in goodset:
-            ErrorCount[3] += 1
+            ErrorCount[3][DeltaMultipler] += 1
         if GoodArmOurs[round][DeltaMultipler] not in goodset:
-            ErrorCount[4] += 1
+            ErrorCount[4][DeltaMultipler] += 1
         print('round', round, 'with delta',  delta, 'completed')
     #feedback is the round that first good arm is found
 
 # deviationTrivialSolver = np.max(stoppingtimeTrivialSolver, axis=0) - np.min(stoppingtimeTrivialSolver, axis=0)
-deviationAPTG = np.max(stoppingtimeAPTG, axis=0) - np.min(stoppingtimeAPTG, axis=0)
-deviationHDoC = np.max(stoppingtimeHDoC, axis=0) - np.min(stoppingtimeHDoC, axis=0)
-deviationOurs = np.max(stoppingtimeOurs, axis=0) - np.min(stoppingtimeOurs, axis=0)
-deviationLUCB = np.max(stoppingtimeLUCB, axis=0) - np.min(stoppingtimeLUCB, axis=0)
+AbstoppingtimeAPTG = stoppingtimeAPTG
+for t in range(repetation):
+    for i in range(plotpoint):
+        if AbstoppingtimeAPTG[t][i] < 0:
+            AbstoppingtimeAPTG[t][i] = np.max(stoppingtimeAPTG, axis=0)[i]
+
+deviationAPTG = np.max(stoppingtimeAPTG, axis=0) - np.min(AbstoppingtimeAPTG, axis=0)
+
+AbstoppingtimeHDoC = stoppingtimeHDoC
+for t in range(repetation):
+    for i in range(plotpoint):
+        if AbstoppingtimeHDoC[t][i] < 0:
+            AbstoppingtimeHDoC[t][i] = np.max(stoppingtimeHDoC, axis=0)[i]
+deviationHDoC = np.max(stoppingtimeHDoC, axis=0) - np.min(AbstoppingtimeHDoC, axis=0)
+
+AbstoppingtimeLUCB = stoppingtimeLUCB
+for t in range(repetation):
+    for i in range(plotpoint):
+        if AbstoppingtimeLUCB[t][i] < 0:
+            AbstoppingtimeLUCB[t][i] = np.max(stoppingtimeLUCB, axis=0)[i]
+deviationLUCB = np.max(stoppingtimeLUCB, axis=0) - np.min(AbstoppingtimeLUCB, axis=0)
+
+AbstoppingtimeOurs = stoppingtimeOurs
+for t in range(repetation):
+    for i in range(plotpoint):
+        if AbstoppingtimeOurs[t][i] < 0:
+            AbstoppingtimeOurs[t][i] = np.max(stoppingtimeOurs, axis=0)[i]
+deviationOurs = np.max(stoppingtimeOurs, axis=0) - np.min(AbstoppingtimeOurs, axis=0)
 
 #calculate the deviations
 #check the presentation of deviation, should the upper bound and lower bound be the same number?
@@ -103,17 +138,70 @@ deviationLUCB = np.max(stoppingtimeLUCB, axis=0) - np.min(stoppingtimeLUCB, axis
 print("Algorithm Finished")
 # np.savez('../GoodArmAuthenticData', GoodArmTrivialSolver, GoodArmAPTG, GoodArmHDoC, GoodArmOurs)
 
-# print(stoppingtimeTrivialSolver, GoodArmTrivialSolver)
-print(stoppingtimeAPTG, GoodArmAPTG)
-print(stoppingtimeHDoC, GoodArmHDoC)
-print(stoppingtimeLUCB, GoodArmLUCB)
-print(stoppingtimeOurs, GoodArmOurs)
+# print(np.sum(stoppingtimeTrivialSolver, axis=0) / (repetation - ErrorCount[0]), GoodArmAPTG)
+averageStoppingtimeTrivialSolver = np.zeros(plotpoint)
+averageStoppingtimeAPTG = np.zeros(plotpoint)
+averageStoppingtimeHDoC = np.zeros(plotpoint)
+averageStoppingtimeLUCB = np.zeros(plotpoint)
+averageStoppingtimeOurs = np.zeros(plotpoint)
+
+def sumStoppingtime(input, repetation, plotpoint):
+    returnValue = np.zeros(plotpoint)
+    for t in range(repetation):
+        for i in range(plotpoint):
+            if input[t][i] >= 0:
+                returnValue[i] += input[t][i]
+    return returnValue
+
+for i in range(plotpoint):
+    if int(repetation - ErrorCount[1][i]) == 0:
+        # no successful case
+        averageStoppingtimeAPTG[i] = -1
+    else:
+        sumAPTG = sumStoppingtime(stoppingtimeAPTG, repetation, plotpoint)
+        averageStoppingtimeAPTG[i] = sumAPTG[i] / int(repetation - ErrorCount[1][i])
+
+    if int(repetation - ErrorCount[2][i]) == 0:
+        # no successful case
+        averageStoppingtimeHDoC[i] = -1
+    else:
+        sumHDoC = sumStoppingtime(stoppingtimeHDoC, repetation, plotpoint)
+        averageStoppingtimeHDoC[i] = sumHDoC[i] / int(repetation - ErrorCount[2][i])
+
+    if int(repetation - ErrorCount[3][i]) == 0:
+        # no successful case
+        averageStoppingtimeLUCB[i] = -1
+    else:
+        sumLUCB = sumStoppingtime(stoppingtimeLUCB, repetation, plotpoint)
+        averageStoppingtimeLUCB[i] = sumLUCB[i] / int(repetation - ErrorCount[3][i])
+
+    if int(repetation - ErrorCount[4][i]) == 0:
+        # no successful case
+        averageStoppingtimeOurs[i] = -1
+    else:
+        sumOurs = sumStoppingtime(stoppingtimeOurs, repetation, plotpoint)
+        averageStoppingtimeOurs[i] = sumOurs[i] / int(repetation - ErrorCount[4][i])
+
+print("Average stopping time")
+print(averageStoppingtimeAPTG)
+print(averageStoppingtimeHDoC)
+print(averageStoppingtimeLUCB)
+print(averageStoppingtimeOurs)
+
 print("Deviation part")
-# print(np.max(stoppingtimeTrivialSolver, axis=0), np.min(stoppingtimeTrivialSolver, axis=0))
-print(np.max(stoppingtimeAPTG, axis=0), np.min(stoppingtimeAPTG, axis=0))
-print(np.max(stoppingtimeHDoC, axis=0), np.min(stoppingtimeHDoC, axis=0))
-print(np.max(stoppingtimeLUCB, axis=0), np.min(stoppingtimeLUCB, axis=0))
-print(np.max(stoppingtimeOurs, axis=0), np.min(stoppingtimeOurs, axis=0))
+print(deviationAPTG)
+print(deviationHDoC)
+print(deviationLUCB)
+print(deviationOurs)
+
 print("Failure Count")
 print(ErrorCount)
+
+print("All founded good arms")
+print(GoodArmAPTG)
+print(GoodArmHDoC)
+print(GoodArmLUCB)
+print(GoodArmOurs)
+
+
 
