@@ -5,25 +5,26 @@ from MultiHDoC import MultiHDoC
 from MultiTUCB import MultiTUCB
 from MultiLUCB import MultiLUCB
 import copy
-M = 4
-K = 10
+
+M = 2
+K = 5
+bmmu_1 = [0.36, 0.59, 0.85, 0.95, 0.79]
+bmmu_2 = [0.375, 0.475, 0.7625, 0.8375, 0.975]
+
+
+thresholds = [0.48, 0.75]
+#for simplicity, we assume sigma is the same for every objective
+sigma = 1.0
+repetation = 50
 plotpoint = 10
-repetation = 2
-sigma = 1.2
+delta = 0.005
+# hatmu[i][m] = feedbackMatrix[t][i][m]
 T0 = 200000
-epsilon = 0.005
+# 10 个数据点
 
-#correct tester
-bmmu_1 = [0.1, 0.1, 0.1, 0.35, 0.45, 0.55, 0.65, 0.2, 0.2, 0.2]
-bmmu_2 = [0.2, round(0.4 - np.power(0.2, 2), 6), round(0.4 - np.power(0.2, 3), 6), round(0.4 - np.power(0.2, 4), 6), round(0.4 - np.power(0.2, 4), 6)
-    , 0.45, 0.55, 0.6 + round(np.power(0.1, 3), 6), round(0.6 + np.power(0.1, 2), 6), round(0.6 + np.power(0.1, 1), 6)]
-bmmu_3 = [0.05, 0.1, 0.15, 0.2, 0.45, 0.55, 0.65, 0.7, 0.75, 0.8]
-bmmu_4 = [0.5, 0.5, 0.5, 0.5, 0.6, 0.6, 0.6, 0.6, 0.7, 0.7]
-
-thresholds = [0.6, 0.5, 0.6, 0.5]
 # thresholds = [0.2, 0.2, 0.2, 0.2]
 #decide a good arm set
-input_matrix = [bmmu_1, bmmu_2, bmmu_3, bmmu_4]
+input_matrix = [bmmu_1, bmmu_2]
 goodset = []
 for i in range(K):
     flag = True
@@ -35,6 +36,7 @@ for i in range(K):
         goodset.append(i)
 
 ErrorCount = np.zeros((5, plotpoint))
+
 GoodArmTrivialSolver = np.zeros((repetation, plotpoint))
 GoodArmAPTG = np.zeros((repetation, plotpoint))
 GoodArmHDoC = np.zeros((repetation, plotpoint))
@@ -58,10 +60,9 @@ stoppingtimeLUCB = np.zeros((repetation, plotpoint))
 
 #feedback matrix 写的不对，应该按照给出的平均值来写
 #所有回合使用的是一样的输入（目前），所以输入数据放在前面生成
-
 #每个算法十个点， 横轴是delta，纵轴是
 for DeltaMultipler in range(plotpoint):
-    delta = 0.005 * (DeltaMultipler + 1)
+    epsilon = 0.002 * (DeltaMultipler + 1)
     for round in range(repetation):
         feedbackMatrix = np.zeros((T0, K, M))
         for t in range(T0):
@@ -73,8 +74,6 @@ for DeltaMultipler in range(plotpoint):
         feedbackMatrix_copy3 = copy.deepcopy(feedbackMatrix)
         feedbackMatrix_copy4 = copy.deepcopy(feedbackMatrix)
         feedbackMatrix_copy5 = copy.deepcopy(feedbackMatrix)
-        ###form the input matrix
-    # print(input_matrix)
         # stoppingtimeTrivialSolver[round][DeltaMultipler], GoodArmTrivialSolver[round][DeltaMultipler] = TrivialSolver(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy1, thresholds)
         stoppingtimeAPTG[round][DeltaMultipler], GoodArmAPTG[round][DeltaMultipler] = MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy2, thresholds)
         stoppingtimeHDoC[round][DeltaMultipler], GoodArmHDoC[round][DeltaMultipler] = MultiHDoC(K, M, T0, sigma, epsilon, delta, feedbackMatrix_copy3, thresholds)
@@ -83,13 +82,13 @@ for DeltaMultipler in range(plotpoint):
         # if stoppingtimeTrivialSolver[round][DeltaMultipler] == T0:
         #     stoppingtimeTrivialSolver[round][DeltaMultipler] = - (2 * T0)
         if stoppingtimeAPTG[round][DeltaMultipler] == T0:
-            stoppingtimeAPTG[round][DeltaMultipler] = -1
+            stoppingtimeAPTG[round][DeltaMultipler] = - 1
         if stoppingtimeHDoC[round][DeltaMultipler] == T0:
-            stoppingtimeHDoC[round][DeltaMultipler] = -1
+            stoppingtimeHDoC[round][DeltaMultipler] = - 1
         if stoppingtimeLUCB[round][DeltaMultipler] == T0:
-            stoppingtimeLUCB[round][DeltaMultipler] = -1
+            stoppingtimeLUCB[round][DeltaMultipler] = - 1
         if stoppingtimeOurs[round][DeltaMultipler] == T0:
-            stoppingtimeOurs[round][DeltaMultipler] = -1
+            stoppingtimeOurs[round][DeltaMultipler] = - 1
 
         # if GoodArmTrivialSolver[round][DeltaMultipler] not in goodset:
         #     ErrorCount[0] += 1
@@ -101,7 +100,7 @@ for DeltaMultipler in range(plotpoint):
             ErrorCount[3][DeltaMultipler] += 1
         if GoodArmOurs[round][DeltaMultipler] not in goodset:
             ErrorCount[4][DeltaMultipler] += 1
-        print('round', round, 'with delta',  delta, 'completed')
+        print('round', round, 'with epsilon',  epsilon, 'completed')
         print("--------------------------------------------")
         print(stoppingtimeAPTG[round])
         print("--------------------------------------------")
@@ -111,7 +110,6 @@ for DeltaMultipler in range(plotpoint):
         print("--------------------------------------------")
         print(stoppingtimeOurs[round])
         print("--------------------------------------------")
-
     #feedback is the round that first good arm is found
 
 # deviationTrivialSolver = np.max(stoppingtimeTrivialSolver, axis=0) - np.min(stoppingtimeTrivialSolver, axis=0)
@@ -144,9 +142,7 @@ for i in range(plotpoint):
             AbstoppingtimeOurs[t][i] = np.max(stoppingtimeOurs, axis=0)[i]
     deviationOurs[i] = np.max(stoppingtimeOurs, axis=0)[i] - np.min(AbstoppingtimeOurs, axis=0)[i]
 
-#calculate the deviations
-#check the presentation of deviation, should the upper bound and lower bound be the same number?
-#计算错误率
+
 print("Algorithm Finished")
 # np.savez('../GoodArmAuthenticData', GoodArmTrivialSolver, GoodArmAPTG, GoodArmHDoC, GoodArmOurs)
 
@@ -231,15 +227,9 @@ print(deviationOursStandard)
 print("--------------------------------------------")
 print("Failure Count")
 print(ErrorCount)
-
 print("--------------------------------------------")
 print("All founded good arms")
 print(GoodArmAPTG)
 print(GoodArmHDoC)
 print(GoodArmLUCB)
 print(GoodArmOurs)
-
-
-
-
-

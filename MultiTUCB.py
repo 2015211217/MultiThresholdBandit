@@ -22,8 +22,8 @@ def MultiTUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
         # algorithm
         mediate3 = np.zeros(K)
         for i in range(K):
-            mediate3[i] = bmg[i] - np.sqrt((2 * np.power(sigma, 2) * np.log((np.power(np.pi, 2) * K * M * np.power(TiT[i], 2))
-                                                                           / (3 * delta))) / TiT[i])
+            mediate3[i] = bmg[i] - np.sqrt((2 * np.power(sigma, 2) * (np.log(K * M * TiT[i]))) / TiT[i])
+            # mediate3[i] = bmg[i] - np.sqrt((np.log(TiT[i])) / TiT[i])
         hati = np.argmin(mediate3)
         # receive and update
         for m in range(M):

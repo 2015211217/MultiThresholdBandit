@@ -48,6 +48,10 @@ deviationAPTG = np.zeros(plotpoint)
 deviationHDoC = np.zeros(plotpoint)
 deviationOurs = np.zeros(plotpoint)
 deviationLUCB = np.zeros(plotpoint)
+deviationAPTGStandard = np.zeros(plotpoint)
+deviationHDoCStandard = np.zeros(plotpoint)
+deviationOursStandard = np.zeros(plotpoint)
+deviationLUCBStandard = np.zeros(plotpoint)
 stoppingtimeTrivialSolver = np.zeros((repetation, plotpoint))
 stoppingtimeAPTG = np.zeros((repetation, plotpoint))
 stoppingtimeHDoC = np.zeros((repetation, plotpoint))
@@ -138,9 +142,7 @@ for i in range(plotpoint):
             AbstoppingtimeOurs[t][i] = np.max(stoppingtimeOurs, axis=0)[i]
     deviationOurs[i] = np.max(stoppingtimeOurs, axis=0)[i] - np.min(AbstoppingtimeOurs, axis=0)[i]
 
-#calculate the deviations
-#check the presentation of deviation, should the upper bound and lower bound be the same number?
-#计算错误率
+
 print("Algorithm Finished")
 # np.savez('../GoodArmAuthenticData', GoodArmTrivialSolver, GoodArmAPTG, GoodArmHDoC, GoodArmOurs)
 
@@ -166,6 +168,10 @@ for i in range(plotpoint):
     else:
         sumAPTG = sumStoppingtime(stoppingtimeAPTG, repetation, plotpoint)
         averageStoppingtimeAPTG[i] = sumAPTG[i] / int(repetation - ErrorCount[1][i])
+    for t in range(repetation):
+        if stoppingtimeAPTG[t][i] > 0:
+            deviationAPTGStandard[i] += np.power(stoppingtimeAPTG[t][i], 2)
+    deviationAPTGStandard[i] = np.sqrt(deviationAPTG / repetation)
 
     if int(repetation - ErrorCount[2][i]) == 0:
         # no successful case
@@ -173,6 +179,10 @@ for i in range(plotpoint):
     else:
         sumHDoC = sumStoppingtime(stoppingtimeHDoC, repetation, plotpoint)
         averageStoppingtimeHDoC[i] = sumHDoC[i] / int(repetation - ErrorCount[2][i])
+    for t in range(repetation):
+        if stoppingtimeHDoC[t][i] > 0:
+            deviationHDoCStandard[i] += np.power(stoppingtimeHDoC[t][i], 2)
+    deviationHDoCStandard[i] = np.sqrt(deviationHDoC / repetation)
 
     if int(repetation - ErrorCount[3][i]) == 0:
         # no successful case
@@ -180,6 +190,10 @@ for i in range(plotpoint):
     else:
         sumLUCB = sumStoppingtime(stoppingtimeLUCB, repetation, plotpoint)
         averageStoppingtimeLUCB[i] = sumLUCB[i] / int(repetation - ErrorCount[3][i])
+    for t in range(repetation):
+        if stoppingtimeLUCB[t][i] > 0:
+            deviationLUCBStandard[i] += np.power(stoppingtimeLUCB[t][i], 2)
+    deviationLUCBStandard[i] = np.sqrt(deviationLUCB / repetation)
 
     if int(repetation - ErrorCount[4][i]) == 0:
         # no successful case
@@ -187,6 +201,10 @@ for i in range(plotpoint):
     else:
         sumOurs = sumStoppingtime(stoppingtimeOurs, repetation, plotpoint)
         averageStoppingtimeOurs[i] = sumOurs[i] / int(repetation - ErrorCount[4][i])
+    for t in range(repetation):
+        if stoppingtimeOurs[t][i] > 0:
+            deviationOursStandard[i] += np.power(stoppingtimeOurs[t][i], 2)
+    deviationOursStandard[i] = np.sqrt(deviationOurs / repetation)
 
 print("--------------------------------------------")
 print("Average stopping time")
@@ -201,9 +219,14 @@ print(deviationHDoC)
 print(deviationLUCB)
 print(deviationOurs)
 print("--------------------------------------------")
+print("Deviation part standard")
+print(deviationAPTGStandard)
+print(deviationHDoCStandard)
+print(deviationLUCBStandard)
+print(deviationOursStandard)
+print("--------------------------------------------")
 print("Failure Count")
 print(ErrorCount)
-
 print("--------------------------------------------")
 print("All founded good arms")
 print(GoodArmAPTG)
