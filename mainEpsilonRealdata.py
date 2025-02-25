@@ -170,7 +170,7 @@ for i in range(plotpoint):
     for t in range(repetation):
         if stoppingtimeAPTG[t][i] > 0:
             deviationAPTGStandard[i] += np.power(stoppingtimeAPTG[t][i], 2)
-    deviationAPTGStandard[i] = np.sqrt(deviationAPTG / repetation)
+    deviationAPTGStandard[i] = np.sqrt(deviationAPTGStandard[i] / repetation)
 
     if int(repetation - ErrorCount[2][i]) == 0:
         # no successful case
@@ -181,7 +181,7 @@ for i in range(plotpoint):
     for t in range(repetation):
         if stoppingtimeHDoC[t][i] > 0:
             deviationHDoCStandard[i] += np.power(stoppingtimeHDoC[t][i], 2)
-    deviationHDoCStandard[i] = np.sqrt(deviationHDoC / repetation)
+    deviationHDoCStandard[i] = np.sqrt(deviationHDoCStandard[i] / repetation)
 
     if int(repetation - ErrorCount[3][i]) == 0:
         # no successful case
@@ -192,7 +192,7 @@ for i in range(plotpoint):
     for t in range(repetation):
         if stoppingtimeLUCB[t][i] > 0:
             deviationLUCBStandard[i] += np.power(stoppingtimeLUCB[t][i], 2)
-    deviationLUCBStandard[i] = np.sqrt(deviationLUCB / repetation)
+    deviationLUCBStandard[i] = np.sqrt(deviationLUCBStandard[i] / repetation)
 
     if int(repetation - ErrorCount[4][i]) == 0:
         # no successful case
@@ -203,7 +203,7 @@ for i in range(plotpoint):
     for t in range(repetation):
         if stoppingtimeOurs[t][i] > 0:
             deviationOursStandard[i] += np.power(stoppingtimeOurs[t][i], 2)
-    deviationOursStandard[i] = np.sqrt(deviationOurs / repetation)
+    deviationOursStandard[i] = np.sqrt(deviationOursStandard[i] / repetation)
 
 print("--------------------------------------------")
 print("Average stopping time")

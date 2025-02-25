@@ -19,8 +19,9 @@ LUCBDeltaResult = [55.437, 94.035, 133.201, 172.487, 211.143, 249.755, 288.074, 
 OursDeltaResult = [115.577, 180.983, 228.775, 268.296, 302.765, 333.714, 362.136, 388.448, 413.145, 436.473]
 lowerAPT = [10 * i for i in range(plot_x_number)]
 upperAPT = [20 * i for i in range(plot_x_number)]
+
 plt.plot(timearray, APTDeltaResult ,"k-.d",label="MultiAPT")
-# plt.fill_between(APTDeltaResult, lowerAPT, upperAPT, color ="k", alpha = 0.2)
+plt.fill_between(timearray, lowerAPT, upperAPT, color ="k", alpha = 0.2)
 
 plt.plot(timearray,HDoCDeltaResult, "g-.^",label="MultiLUCB")
 # plt.fill_between(HDoCDeltaResult, lowerAPT, upperAPT, color ="g", alpha = 0.2)
@@ -44,12 +45,14 @@ plt.ylim(ymin = 0)
 plt.xlim(xmin = 1)
 
 plt.grid(b=None, which='major', axis='both')
-plt.xlabel("Delta", fontsize = 14, fontweight = 'bold')
+plt.xlabel("Confidence Bound $\delta$", fontsize = 16, fontweight = 'bold')
 plt.ylabel("Stopping time", fontsize = 16, fontweight = 'bold')
 plt.rcParams.update({'font.size': 14})
 font = {'style': 'normal', 'weight': 'bold'}
 
 plt.legend(frameon=False, loc=9, ncol=2, bbox_to_anchor=(0.5, 1.18), prop=font)
 
-plt.savefig('AuthenticDelta.pdf', format='pdf')
+
+# plt.savefig('SyntheticDelta.pdf', format='pdf')
+
 plt.show()
