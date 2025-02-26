@@ -14,7 +14,7 @@ bmmu_2 = [0.5, 0.7, 1.6, 1.8, 1.2, 1.0, 0.6]
 thresholds = [0.5, 1.1]
 #for simplicity, we assume sigma is the same for every objective
 sigma = 1.0
-repetation = 100
+repetation = 50
 plotpoint = 10
 epsilon = 0.005
 # hatmu[i][m] = feedbackMatrix[t][i][m]
@@ -61,6 +61,7 @@ stoppingtimeLUCB = np.zeros((repetation, plotpoint))
 for DeltaMultipler in range(plotpoint):
     delta = 0.005 * (DeltaMultipler + 1)
     for round in range(repetation):
+        np.random.seed(round)
         feedbackMatrix = np.zeros((T0, K, M))
         for t in range(T0):
             for i in range(K):

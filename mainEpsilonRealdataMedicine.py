@@ -11,7 +11,6 @@ K = 5
 bmmu_1 = [0.36, 0.59, 0.85, 0.95, 0.79]
 bmmu_2 = [0.375, 0.475, 0.7625, 0.8375, 0.975]
 
-
 thresholds = [0.48, 0.75]
 #for simplicity, we assume sigma is the same for every objective
 sigma = 1.0
@@ -58,12 +57,10 @@ stoppingtimeHDoC = np.zeros((repetation, plotpoint))
 stoppingtimeOurs = np.zeros((repetation, plotpoint))
 stoppingtimeLUCB = np.zeros((repetation, plotpoint))
 
-#feedback matrix 写的不对，应该按照给出的平均值来写
-#所有回合使用的是一样的输入（目前），所以输入数据放在前面生成
-#每个算法十个点， 横轴是delta，纵轴是
 for DeltaMultipler in range(plotpoint):
     epsilon = 0.002 * (DeltaMultipler + 1)
     for round in range(repetation):
+        np.random.seed(round)
         feedbackMatrix = np.zeros((T0, K, M))
         for t in range(T0):
             for i in range(K):

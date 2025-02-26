@@ -63,6 +63,7 @@ stoppingtimeLUCB = np.zeros((repetation, plotpoint))
 for DeltaMultipler in range(plotpoint):
     delta = 0.005 * (DeltaMultipler + 1)
     for round in range(repetation):
+        np.random.seed(round)
         feedbackMatrix = np.zeros((T0, K, M))
         for t in range(T0):
             for i in range(K):

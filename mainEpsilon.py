@@ -57,12 +57,11 @@ stoppingtimeHDoC = np.zeros((repetation, plotpoint))
 stoppingtimeOurs = np.zeros((repetation, plotpoint))
 stoppingtimeLUCB = np.zeros((repetation, plotpoint))
 
-#feedback matrix 写的不对，应该按照给出的平均值来写
-#所有回合使用的是一样的输入（目前），所以输入数据放在前面生成
 #每个算法十个点， 横轴是delta，纵轴是
 for DeltaMultipler in range(plotpoint):
     epsilon = 0.002 * (DeltaMultipler + 1)
     for round in range(repetation):
+        np.random.seed(round)
         feedbackMatrix = np.zeros((T0, K, M))
         for t in range(T0):
             for i in range(K):
