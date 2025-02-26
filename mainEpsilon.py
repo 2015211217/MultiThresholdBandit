@@ -13,7 +13,6 @@ sigma = 1.2
 T0 = 200000
 delta = 0.005
 
-
 #correct tester
 bmmu_1 = [0.1, 0.1, 0.1, 0.35, 0.45, 0.55, 0.65, 0.2, 0.2, 0.2]
 bmmu_2 = [0.2, round(0.4 - np.power(0.2, 2), 6), round(0.4 - np.power(0.2, 3), 6), round(0.4 - np.power(0.2, 4), 6), round(0.4 - np.power(0.2, 4), 6)
@@ -157,7 +156,7 @@ def sumStoppingtime(input, repetation, plotpoint):
     returnValue = np.zeros(plotpoint)
     for t in range(repetation):
         for i in range(plotpoint):
-            if input[t][i] >= 0:
+            if input[t][i] > 0:
                 returnValue[i] += input[t][i]
     return returnValue
 
@@ -170,7 +169,7 @@ for i in range(plotpoint):
         averageStoppingtimeAPTG[i] = sumAPTG[i] / int(repetation - ErrorCount[1][i])
     for t in range(repetation):
         if stoppingtimeAPTG[t][i] > 0:
-            deviationAPTGStandard[i] += np.power(stoppingtimeAPTG[t][i], 2)
+            deviationAPTGStandard[i] += np.power(stoppingtimeAPTG[t][i] - averageStoppingtimeAPTG[i], 2)
     deviationAPTGStandard[i] = np.sqrt(deviationAPTGStandard[i] / repetation)
 
     if int(repetation - ErrorCount[2][i]) == 0:
@@ -181,7 +180,7 @@ for i in range(plotpoint):
         averageStoppingtimeHDoC[i] = sumHDoC[i] / int(repetation - ErrorCount[2][i])
     for t in range(repetation):
         if stoppingtimeHDoC[t][i] > 0:
-            deviationHDoCStandard[i] += np.power(stoppingtimeHDoC[t][i], 2)
+            deviationHDoCStandard[i] += np.power(stoppingtimeHDoC[t][i] - averageStoppingtimeHDoC[i], 2)
     deviationHDoCStandard[i] = np.sqrt(deviationHDoCStandard[i] / repetation)
 
     if int(repetation - ErrorCount[3][i]) == 0:
@@ -192,7 +191,7 @@ for i in range(plotpoint):
         averageStoppingtimeLUCB[i] = sumLUCB[i] / int(repetation - ErrorCount[3][i])
     for t in range(repetation):
         if stoppingtimeLUCB[t][i] > 0:
-            deviationLUCBStandard[i] += np.power(stoppingtimeLUCB[t][i], 2)
+            deviationLUCBStandard[i] += np.power(stoppingtimeLUCB[t][i] - averageStoppingtimeLUCB[i], 2)
     deviationLUCBStandard[i] = np.sqrt(deviationLUCBStandard[i] / repetation)
 
     if int(repetation - ErrorCount[4][i]) == 0:
@@ -203,7 +202,7 @@ for i in range(plotpoint):
         averageStoppingtimeOurs[i] = sumOurs[i] / int(repetation - ErrorCount[4][i])
     for t in range(repetation):
         if stoppingtimeOurs[t][i] > 0:
-            deviationOursStandard[i] += np.power(stoppingtimeOurs[t][i], 2)
+            deviationOursStandard[i] += np.power(stoppingtimeOurs[t][i] - averageStoppingtimeOurs[i], 2)
     deviationOursStandard[i] = np.sqrt(deviationOursStandard[i] / repetation)
 
 print("--------------------------------------------")

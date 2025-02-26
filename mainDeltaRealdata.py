@@ -14,7 +14,7 @@ bmmu_2 = [0.5, 0.7, 1.6, 1.8, 1.2, 1.0, 0.6]
 thresholds = [0.5, 1.1]
 #for simplicity, we assume sigma is the same for every objective
 sigma = 1.0
-repetation = 50
+repetation = 100
 plotpoint = 10
 epsilon = 0.005
 # hatmu[i][m] = feedbackMatrix[t][i][m]
@@ -171,7 +171,7 @@ for i in range(plotpoint):
         averageStoppingtimeAPTG[i] = sumAPTG[i] / int(repetation - ErrorCount[1][i])
     for t in range(repetation):
         if stoppingtimeAPTG[t][i] > 0:
-            deviationAPTGStandard[i] += np.power(stoppingtimeAPTG[t][i], 2)
+            deviationAPTGStandard[i] += np.power(stoppingtimeAPTG[t][i]- averageStoppingtimeAPTG[i], 2)
     deviationAPTGStandard[i] = np.sqrt(deviationAPTGStandard[i] / repetation)
 
     if int(repetation - ErrorCount[2][i]) == 0:
@@ -182,7 +182,7 @@ for i in range(plotpoint):
         averageStoppingtimeHDoC[i] = sumHDoC[i] / int(repetation - ErrorCount[2][i])
     for t in range(repetation):
         if stoppingtimeHDoC[t][i] > 0:
-            deviationHDoCStandard[i] += np.power(stoppingtimeHDoC[t][i], 2)
+            deviationHDoCStandard[i] += np.power(stoppingtimeHDoC[t][i] - averageStoppingtimeHDoC[i], 2)
     deviationHDoCStandard[i] = np.sqrt(deviationHDoCStandard[i] / repetation)
 
     if int(repetation - ErrorCount[3][i]) == 0:
@@ -193,7 +193,7 @@ for i in range(plotpoint):
         averageStoppingtimeLUCB[i] = sumLUCB[i] / int(repetation - ErrorCount[3][i])
     for t in range(repetation):
         if stoppingtimeLUCB[t][i] > 0:
-            deviationLUCBStandard[i] += np.power(stoppingtimeLUCB[t][i], 2)
+            deviationLUCBStandard[i] += np.power(stoppingtimeLUCB[t][i] - averageStoppingtimeLUCB[i], 2)
     deviationLUCBStandard[i] = np.sqrt(deviationLUCBStandard[i] / repetation)
 
     if int(repetation - ErrorCount[4][i]) == 0:
@@ -204,7 +204,7 @@ for i in range(plotpoint):
         averageStoppingtimeOurs[i] = sumOurs[i] / int(repetation - ErrorCount[4][i])
     for t in range(repetation):
         if stoppingtimeOurs[t][i] > 0:
-            deviationOursStandard[i] += np.power(stoppingtimeOurs[t][i], 2)
+            deviationOursStandard[i] += np.power(stoppingtimeOurs[t][i] - averageStoppingtimeOurs[i], 2)
     deviationOursStandard[i] = np.sqrt(deviationOursStandard[i] / repetation)
 
 print("--------------------------------------------")
