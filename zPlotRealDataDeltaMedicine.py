@@ -12,18 +12,14 @@ timearray = np.zeros(plot_x_number)
 for i in range(plot_x_number):
     timearray[i] = (i+1) * delta_block
 
-MultiAPT = [160327.25, 149014.45652174, 149530.15555556, 142086.46808511,147100.34782609, 167917.51219512, 132421.83673469, 146453.64444444,152517.37777778, 122454.51020408]
-MultiHDoC = [1535.3,  1812.72, 1465.92, 4063.76, 1710.16, 1781.12, 1607.48, 1620.62, 1497.16,
- 1240.04]
-MultiLUCB = [3098.68, 2876.78, 2501.02, 2465.04, 2542.28, 2185.06, 2125.74, 2140.16, 2115.58,
- 2101.16]
-MultiOurs = [1308.3,  1283.32, 1113.9,  1479.92, 1365.34, 1182.18, 1368.08, 1516.72, 1219.76, 1426.12]
-
-APTDeviation = [38386.29641724, 40849.41320589, 37417.99464596, 35287.5673314, 40396.03507837, 53007.60101729, 36010.5473857,  39589.88414623, 45739.74331533, 32524.95234664]
-
-HDoCDeviation = [1287.62439011,  2045.0580827,   1473.14240778, 1641.87179821, 2088.92693372,  2134.20964893,  1675.18984285,  1475.34485311,1935.6789647, 1264.32274297]
-LUCBDeviation = [1095.7099149, 794.37274097, 688.73668379, 756.88712395, 779.05807332, 744.30510975, 757.81833733, 661.85670232, 912.88328038, 716.11346475]
-OursDeviation = [823.29426695, 565.27524057,  410.01332905, 2053.6300625, 1198.00189666, 1067.77320982, 1322.8584783, 1647.52989703,  957.95564741, 1656.54098217]
+MultiAPT = []
+MultiHDoC = []
+MultiLUCB = []
+MultiOurs = []
+APTDeviation = []
+HDoCDeviation = []
+LUCBDeviation = []
+OursDeviation = []
 
 APTLower = np.zeros(plot_x_number)
 HDoCLower = np.zeros(plot_x_number)
@@ -85,5 +81,26 @@ font = {'style': 'normal', 'weight': 'bold'}
 plt.legend(frameon=False, loc=9, ncol=2, bbox_to_anchor=(0.5, 1.18), prop=font)
 
 # plt.savefig('SyntheticDelta.pdf', format='pdf', bbox_inches = 'tight')
+
+plt.show()
+ax.set_xlim(delta_block, delta_block * (plot_x_number))
+ax.set_xticks(np.arange(delta_block, delta_block * (plot_x_number + 1), step=delta_block))
+
+plt.yticks(fontweight='bold')
+
+
+plt.ylim(ymin = 0)
+plt.xlim(xmin = delta_block)
+
+plt.grid(b=None, which='major', axis='both')
+plt.xlabel("Confidence Bound", fontsize=16, fontweight='bold')
+plt.ylabel("Stopping Time", fontsize=16, fontweight='bold')
+plt.rcParams.update({'font.size': 14})
+font = {'style': 'normal', 'weight': 'bold'}
+
+# plt.tight_layout()
+plt.legend(frameon=False, loc=9, ncol=2, bbox_to_anchor=(0.5, 1.18), prop=font)
+
+plt.savefig('RealdataMedicineDelta.pdf', format='pdf', bbox_inches = 'tight')
 
 plt.show()
