@@ -66,9 +66,11 @@ ax.xaxis.get_offset_text().set_fontsize(16)
 
 plt.tick_params(labelsize=14)
 plt.xticks(fontweight='bold')
+ax.set_xlim(delta_block, delta_block * (plot_x_number))
 ax.set_xticks(np.arange(delta_block, delta_block * (plot_x_number + 1), step=delta_block))
 
 plt.yticks(fontweight='bold')
+
 
 plt.ylim(ymin = 0)
 plt.xlim(xmin = delta_block)
