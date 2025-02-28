@@ -12,17 +12,16 @@ timearray = np.zeros(plot_x_number)
 for i in range(plot_x_number):
     timearray[i] = (i+1) * epsilon_block
 
-MultiAPT = [160327.25, 149014.45652174, 149530.15555556, 142086.46808511,147100.34782609, 167917.51219512, 132421.83673469, 146453.64444444,152517.37777778, 122454.51020408]
 
-MultiHDoC = [1535.3,  1812.72, 1465.92, 4063.76, 1710.16, 1781.12, 1607.48, 1620.62, 1497.16, 1240.04]
-MultiLUCB = [3098.68, 2876.78, 2501.02, 2465.04, 2542.28, 2185.06, 2125.74, 2140.16, 2115.58, 2101.16]
-MultiOurs = [1308.3,  1283.32, 1113.9,  1479.92, 1365.34, 1182.18, 1368.08, 1516.72, 1219.76, 1426.12]
+MultiAPT = [-1, 181674.58823529, 144819.64210526, 116853.30927835, 95530.54, 81274.29, 69567.81, 59540.05, 53113.02, 47289.76]
+MultiHDoC = [2081.5, 2030.25, 1973.06, 1930.39, 1898.61, 1835.34, 1788.18, 1754.77, 1731.85, 1696.29]
+MultiLUCB = [3284.41, 3229.69, 3173.31, 3122.85, 3071.79, 3008.21, 2967.97, 2919.15, 2867.15, 2816.32]
+MultiOurs = [1693.13, 1618.8, 1585.53, 1546.54, 1508.42, 1473.02, 1422.95, 1387.44, 1350.8, 1327.74]
 
-APTDeviation = [38386.29641724, 40849.41320589, 37417.99464596, 35287.5673314, 40396.03507837, 53007.60101729, 36010.5473857, 39589.88414623, 45739.74331533, 32524.95234664]
-
-HDoCDeviation = [1287.62439011,  2045.0580827,   1473.14240778, 1641.87179821, 2088.92693372,  2134.20964893, 1675.18984285, 1475.34485311,1935.6789647, 1264.32274297]
-LUCBDeviation = [1095.7099149, 794.37274097, 688.73668379, 756.88712395, 779.05807332, 744.30510975, 757.81833733, 661.85670232, 912.88328038, 716.11346475]
-OursDeviation = [823.29426695, 565.27524057,  410.01332905, 2053.6300625, 1198.00189666, 1067.77320982, 1322.8584783, 1647.52989703, 957.95564741, 1656.54098217]
+APTDeviation = [-1, 77896.11808452, 34931.99305498, 30578.90747699, 26363.82198598, 22850.2680677, 20340.80240978, 15810.40939974, 14478.15645031, 12240.33426841]
+HDoCDeviation = [2269.77276616, 2165.37264403, 2083.25188981, 2006.03156453, 1950.39087823, 1831.98543782, 1771.07654482, 1736.97218662, 1716.52777068, 1672.55527439]
+LUCBDeviation = [1001.53818794, 975.6932786, 946.89827009, 926.59055008, 906.23394656, 889.84196681, 876.95117829, 874.40320648, 866.23351788, 868.68628261]
+OursDeviation = [1986.43889236, 1762.85317029, 1700.04494326, 1633.87413481, 1535.50224474, 1445.13391061, 1362.84951756, 1253.00673039, 1190.12890058, 1166.27057427]
 
 APTLower = np.zeros(plot_x_number)
 HDoCLower = np.zeros(plot_x_number)
@@ -47,13 +46,13 @@ for i in range(plot_x_number):
 # plt.fill_between(timearray, APTLower, APTUpper, color ="k", alpha=0.2)
 # ax.plot(timearray, MultiAPT)
 ax.plot(timearray, MultiHDoC, "g-.^", label="MultiLUCB")
-ax.fill_between(timearray, HDoCLower, HDoCUpper, color ="g", alpha=0.1)
+# ax.fill_between(timearray, HDoCLower, HDoCUpper, color ="g", alpha=0.1)
 
 ax.plot(timearray, MultiLUCB, color="b", linestyle='-.', marker='*', label="MultiHDoC")
-ax.fill_between(timearray, LUCBLower, LUCBUpper, color="b", alpha=0.1)
+# ax.fill_between(timearray, LUCBLower, LUCBUpper, color="b", alpha=0.1)
 
 ax.plot(timearray, MultiOurs, "r-.h", label="MultiTUCB")
-ax.fill_between(timearray, OursLower, OursUpper, color="r", alpha=0.1)
+# ax.fill_between(timearray, OursLower, OursUpper, color="r", alpha=0.1)
 
 # plt.yticks(np.arange(1, 6, step = 4))
 ax.ticklabel_format(axis="x", style="sci", scilimits=(0, 0))
@@ -70,9 +69,10 @@ ax.set_xticks(np.arange(epsilon_block, epsilon_block * (plot_x_number + 1), step
 
 plt.yticks(fontweight='bold')
 
-
-plt.ylim(ymin = 0)
-plt.xlim(xmin = epsilon_block)
+ax.set_ylim(1000, 3500)
+ax.set_yticks(np.arange(1000, 4000, step=500))
+plt.ylim(ymin=1000)
+plt.xlim(xmin=epsilon_block)
 
 plt.grid(b=None, which='major', axis='both')
 plt.xlabel("Confidence Bound", fontsize=16, fontweight='bold')
@@ -84,5 +84,6 @@ font = {'style': 'normal', 'weight': 'bold'}
 plt.legend(frameon=False, loc=9, ncol=2, bbox_to_anchor=(0.5, 1.18), prop=font)
 
 # plt.savefig('SyntheticDelta.pdf', format='pdf', bbox_inches = 'tight')
+plt.savefig('RealdataEpsilonMedicine.pdf', dpi=600, format='pdf', bbox_inches='tight')
 
 plt.show()

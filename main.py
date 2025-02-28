@@ -8,7 +8,7 @@ import copy
 M = 4
 K = 10
 plotpoint = 10
-repetation = 100
+repetation = 50
 sigma = 1.2
 T0 = 200000
 epsilon = 0.005

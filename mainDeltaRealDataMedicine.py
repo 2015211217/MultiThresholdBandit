@@ -17,7 +17,7 @@ thresholds = [0.48, 0.75]
 sigma = 1.0
 repetation = 100
 plotpoint = 10
-delta = 0.005
+epsilon = 0.005
 # hatmu[i][m] = feedbackMatrix[t][i][m]
 T0 = 200000
 # 10 个数据点
@@ -60,7 +60,7 @@ stoppingtimeLUCB = np.zeros((repetation, plotpoint))
 
 #每个算法十个点， 横轴是delta，纵轴是
 for DeltaMultipler in range(plotpoint):
-    epsilon = 0.002 * (DeltaMultipler + 1)
+    delta = 0.005 * (DeltaMultipler + 1)
     for round in range(repetation):
         np.random.seed(round)
         feedbackMatrix = np.zeros((T0, K, M))

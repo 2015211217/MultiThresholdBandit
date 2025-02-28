@@ -16,6 +16,7 @@ MultiAPT = []
 MultiHDoC = []
 MultiLUCB = []
 MultiOurs = []
+
 APTDeviation = []
 HDoCDeviation = []
 LUCBDeviation = []
@@ -43,14 +44,16 @@ for i in range(plot_x_number):
 # plt.plot(timearray, MultiAPT, "k-.d", label="MultiAPT")
 # plt.fill_between(timearray, APTLower, APTUpper, color ="k", alpha=0.2)
 # ax.plot(timearray, MultiAPT)
+
+# plt.plot(timearray, MultiHDoC, "g-.^", label="MultiLUCB")
 ax.plot(timearray, MultiHDoC, "g-.^", label="MultiLUCB")
-ax.fill_between(timearray, HDoCLower, HDoCUpper, color ="g", alpha=0.1)
+# ax.fill_between(timearray, HDoCLower, HDoCUpper, color ="g", alpha=0.1)
 
 ax.plot(timearray, MultiLUCB, color="b", linestyle='-.', marker='*', label="MultiHDoC")
-ax.fill_between(timearray, LUCBLower, LUCBUpper, color="b", alpha=0.1)
+# ax.fill_between(timearray, LUCBLower, LUCBUpper, color="b", alpha=0.1)
 
 ax.plot(timearray, MultiOurs, "r-.h", label="MultiTUCB")
-ax.fill_between(timearray, OursLower, OursUpper, color="r", alpha=0.1)
+# ax.fill_between(timearray, OursLower, OursUpper, color="r", alpha=0.1)
 
 # plt.yticks(np.arange(1, 6, step = 4))
 ax.ticklabel_format(axis="x", style="sci", scilimits=(0, 0))
@@ -65,42 +68,23 @@ plt.xticks(fontweight='bold')
 ax.set_xlim(delta_block, delta_block * (plot_x_number))
 ax.set_xticks(np.arange(delta_block, delta_block * (plot_x_number + 1), step=delta_block))
 
+ax.set_ylim(1000, 3500)
+ax.set_yticks(np.arange(1000, 4000, step=500))
 plt.yticks(fontweight='bold')
 
-
-plt.ylim(ymin = 0)
-plt.xlim(xmin = delta_block)
+# plt.ylim(ymin=1000)
+# plt.xlim(xmin=delta_block)
 
 plt.grid(b=None, which='major', axis='both')
 plt.xlabel("Confidence Bound", fontsize=16, fontweight='bold')
 plt.ylabel("Stopping Time", fontsize=16, fontweight='bold')
+plt.ylabel("Stopping Time", fontsize=16, fontweight='bold')
+
 plt.rcParams.update({'font.size': 14})
 font = {'style': 'normal', 'weight': 'bold'}
 
 # plt.tight_layout()
 plt.legend(frameon=False, loc=9, ncol=2, bbox_to_anchor=(0.5, 1.18), prop=font)
-
-# plt.savefig('SyntheticDelta.pdf', format='pdf', bbox_inches = 'tight')
-
-plt.show()
-ax.set_xlim(delta_block, delta_block * (plot_x_number))
-ax.set_xticks(np.arange(delta_block, delta_block * (plot_x_number + 1), step=delta_block))
-
-plt.yticks(fontweight='bold')
-
-
-plt.ylim(ymin = 0)
-plt.xlim(xmin = delta_block)
-
-plt.grid(b=None, which='major', axis='both')
-plt.xlabel("Confidence Bound", fontsize=16, fontweight='bold')
-plt.ylabel("Stopping Time", fontsize=16, fontweight='bold')
-plt.rcParams.update({'font.size': 14})
-font = {'style': 'normal', 'weight': 'bold'}
-
-# plt.tight_layout()
-plt.legend(frameon=False, loc=9, ncol=2, bbox_to_anchor=(0.5, 1.18), prop=font)
-
-plt.savefig('RealdataMedicineDelta.pdf', format='pdf', bbox_inches = 'tight')
+plt.savefig("/Users/jiangxuanke/Desktop/ECML2025/RealdataMedicineDelta.eps", dpi=600, format='eps', bbox_inches='tight')
 
 plt.show()
