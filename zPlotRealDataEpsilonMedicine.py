@@ -43,7 +43,7 @@ for i in range(plot_x_number):
     OursUpper[i] = MultiOurs[i] + OursDeviation[i]
 
 # plt.plot(timearray, MultiAPT, "k-.d", label="MultiAPT")
-# plt.fill_between(timearray, APTLower, APTUpper, color ="k", alpha=0.2)
+# plt.fill_between(timearray, APTLower, APTUpper, color ="k", alpha=0.1)
 # ax.plot(timearray, MultiAPT)
 ax.plot(timearray, MultiHDoC, "g-.^", label="MultiLUCB")
 # ax.fill_between(timearray, HDoCLower, HDoCUpper, color ="g", alpha=0.1)
@@ -75,7 +75,7 @@ plt.ylim(ymin=1000)
 plt.xlim(xmin=epsilon_block)
 
 plt.grid(b=None, which='major', axis='both')
-plt.xlabel("Confidence Bound", fontsize=16, fontweight='bold')
+plt.xlabel("Accuracy Rate", fontsize=14, fontweight='bold')
 plt.ylabel("Stopping Time", fontsize=16, fontweight='bold')
 plt.rcParams.update({'font.size': 14})
 font = {'style': 'normal', 'weight': 'bold'}
@@ -84,6 +84,6 @@ font = {'style': 'normal', 'weight': 'bold'}
 plt.legend(frameon=False, loc=9, ncol=2, bbox_to_anchor=(0.5, 1.18), prop=font)
 
 # plt.savefig('SyntheticDelta.pdf', format='pdf', bbox_inches = 'tight')
-plt.savefig('RealdataEpsilonMedicine.pdf', dpi=600, format='pdf', bbox_inches='tight')
+plt.savefig('EpsilonMedicine.eps', dpi=600, format='eps', bbox_inches='tight')
 
 plt.show()
