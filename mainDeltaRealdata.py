@@ -14,7 +14,7 @@ bmmu_2 = [0.5, 0.7, 1.6, 1.8, 1.2, 1.0, 0.6]
 thresholds = [0.5, 1.1]
 #for simplicity, we assume sigma is the same for every objective
 sigma = 1.0
-repetation = 50
+repetation = 100
 plotpoint = 10
 epsilon = 0.005
 # hatmu[i][m] = feedbackMatrix[t][i][m]
@@ -80,13 +80,13 @@ for DeltaMultipler in range(plotpoint):
         # if stoppingtimeTrivialSolver[round][DeltaMultipler] == T0:
         #     stoppingtimeTrivialSolver[round][DeltaMultipler] = - (2 * T0)
         if stoppingtimeAPTG[round][DeltaMultipler] == T0:
-            stoppingtimeAPTG[round][DeltaMultipler] = - 1
+            stoppingtimeAPTG[round][DeltaMultipler] = -1
         if stoppingtimeHDoC[round][DeltaMultipler] == T0:
-            stoppingtimeHDoC[round][DeltaMultipler] = - 1
+            stoppingtimeHDoC[round][DeltaMultipler] = -1
         if stoppingtimeLUCB[round][DeltaMultipler] == T0:
-            stoppingtimeLUCB[round][DeltaMultipler] = - 1
+            stoppingtimeLUCB[round][DeltaMultipler] = -1
         if stoppingtimeOurs[round][DeltaMultipler] == T0:
-            stoppingtimeOurs[round][DeltaMultipler] = - 1
+            stoppingtimeOurs[round][DeltaMultipler] = -1
 
         # if GoodArmTrivialSolver[round][DeltaMultipler] not in goodset:
         #     ErrorCount[0] += 1
@@ -172,7 +172,7 @@ for i in range(plotpoint):
         averageStoppingtimeAPTG[i] = sumAPTG[i] / int(repetation - ErrorCount[1][i])
     for t in range(repetation):
         if stoppingtimeAPTG[t][i] > 0:
-            deviationAPTGStandard[i] += np.power(stoppingtimeAPTG[t][i]- averageStoppingtimeAPTG[i], 2)
+            deviationAPTGStandard[i] += np.power(stoppingtimeAPTG[t][i] - averageStoppingtimeAPTG[i], 2)
     deviationAPTGStandard[i] = np.sqrt(deviationAPTGStandard[i] / repetation)
 
     if int(repetation - ErrorCount[2][i]) == 0:
