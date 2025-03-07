@@ -71,10 +71,10 @@ ax.set_xticks(np.arange(epsilon_block, epsilon_block * (plot_x_number + 1), step
 
 plt.yticks(fontweight='bold')
 
-# y_epsilon_block = 20000
-# plot_y_number = 7
-# ax.set_ylim(y_epsilon_block, y_epsilon_block * (plot_y_number))
-# ax.set_yticks(np.arange(y_epsilon_block, y_epsilon_block * (plot_y_number + 1), step=y_epsilon_block))
+y_epsilon_block = 20000
+plot_y_number = 7
+ax.set_ylim(y_epsilon_block, y_epsilon_block * (plot_y_number))
+ax.set_yticks(np.arange(y_epsilon_block, y_epsilon_block * (plot_y_number + 1), step=y_epsilon_block))
 
 plt.ylim(ymin = 20000)
 plt.xlim(xmin = epsilon_block)
