@@ -12,15 +12,21 @@ timearray = np.zeros(plot_x_number)
 for i in range(plot_x_number):
     timearray[i] = (i+1) * delta_block
 
-MultiAPT = [168464.60227273, 164010.56818182, 160077.52808989, 156394.01111111, 155142.52222222, 150629.40659341, 149706.83516484, 149331.6043956, 148355.07692308, 147793.96703297]
-MultiHDoC = [1996.62, 1952.94, 1936.25, 1911., 1892., 1876.81, 1871.06, 1860.7,  1855.09, 1849.62]
-MultiLUCB = [3199.52, 2772.84, 2787.39, 2586.97, 2423.6,  2237.14, 2342.78, 2157.87, 2092.71, 2023.79]
-MultiOurs = [1597.06, 1560.37, 1540.89, 1508.52, 1495.97, 1480.3,  1472.21, 1464.87, 1460.68, 1453.33]
 
-APTDeviation = [39652.82242691, 39941.22511534, 40398.93081942, 39735.35328158, 39414.17157739, 38367.26180979, 38273.09955206, 38296.01670096, 38073.22663265, 38105.18972016]
-HDoCDeviation = [2116.67911493, 2083.46007795, 2073.69486847, 2047.51759455, 2021.82244028, 2008.28601895, 2006.38509673, 1985.10533474, 1984.87183513, 1983.96353686]
-LUCBDeviation = [948.11974434, 894.13253738, 915.54513701, 835.16907815, 808.14570468, 778.97821561, 880.62160523, 759.41318997, 720.49098946, 784.67388506]
-OursDeviation = [1724.47688775, 1705.46838525, 1687.12323732, 1658.73858989, 1643.70148418, 1635.1673951,  1630.69404423, 1622.83684734, 1616.0078829,  1616.64914595]
+MultiAPT = [159632.82943144, 150893.49019608, 146577.35459459, 142996.07708779, 140378.18490967, 137828.06765328,
+     135861.16998951, 134781.87735849, 133787.23769634, 132886.51046025]
+MultiHDoC = [2029.522, 1977.541, 1948.431, 1930.845, 1915.501, 1903.401, 1894.292, 1888.086, 1882.113, 1873.55]
+MultiLUCB = [3204.127, 2790.962, 2662.78, 2485.282, 2377.705, 2262.388, 2239.135, 2085.042, 2064.848, 2008.759]
+MultiOurs = [1654.104, 1611.449, 1588.862, 1568.517, 1556.477, 1544.531, 1531.553, 1522.434, 1516.436, 1510.738]
+
+APTDeviation = [40486.05851915, 39227.44442852, 39267.97317036, 39000.39356306, 38710.65058721, 38258.85509071, 38070.14374243,
+     38043.5065537, 38169.41400362, 38032.59847124]
+HDoCDeviation = [6277.95483255, 6148.12027748, 6136.71855353, 6120.68424908, 6103.42505549, 6098.67129563, 6092.35362768,
+     6090.57123188, 6078.31273844, 6074.75748927]
+LUCBDeviation = [974.94906989, 856.3345506, 856.67674627, 806.8319072, 782.59691794, 729.8126153, 763.87393382, 705.09719772,
+     699.26410382, 678.39591753]
+OursDeviation = [6079.60310162, 5954.84430455, 5941.58978565, 5923.7232273, 5919.56934662, 5912.52421145, 5910.70541266,
+     5896.30321877, 5895.68469899, 5894.54876877]
 
 APTLower = np.zeros(plot_x_number)
 HDoCLower = np.zeros(plot_x_number)
@@ -46,11 +52,11 @@ for i in range(plot_x_number):
 # ax.plot(timearray, MultiAPT)
 
 # plt.plot(timearray, MultiHDoC, "g-.^", label="MultiLUCB")
-ax.plot(timearray, MultiHDoC, "g-.^", label="MultiLUCB")
-# ax.fill_between(timearray, HDoCLower, HDoCUpper, color ="g", alpha=0.1)
-
-ax.plot(timearray, MultiLUCB, color="b", linestyle='-.', marker='*', label="MultiHDoC")
+ax.plot(timearray, MultiLUCB, "g-.^", label="MultiLUCB")
 # ax.fill_between(timearray, LUCBLower, LUCBUpper, color="b", alpha=0.1)
+
+ax.plot(timearray, MultiHDoC, color="b", linestyle='-.', marker='*', label="MultiHDoC")
+# ax.fill_between(timearray, HDoCLower, HDoCUpper, color ="g", alpha=0.1)
 
 ax.plot(timearray, MultiOurs, "r-.h", label="MultiTUCB")
 # ax.fill_between(timearray, OursLower, OursUpper, color="r", alpha=0.1)
@@ -68,11 +74,11 @@ plt.xticks(fontweight='bold')
 ax.set_xlim(delta_block, delta_block * (plot_x_number))
 ax.set_xticks(np.arange(delta_block, delta_block * (plot_x_number + 1), step=delta_block))
 
-ax.set_ylim(1000, 3500)
+ax.set_ylim(1500, 3500)
 ax.set_yticks(np.arange(1000, 4000, step=500))
 plt.yticks(fontweight='bold')
 
-# plt.ylim(ymin=1000)
+plt.ylim(ymin=1500)
 # plt.xlim(xmin=delta_block)
 
 # y_delta_block = 20000

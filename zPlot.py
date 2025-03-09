@@ -45,11 +45,11 @@ for i in range(plot_x_number):
 plt.plot(timearray, MultiAPT, "k-.d", label="MultiAPT")
 # plt.fill_between(timearray, APTLower, APTUpper, color ="k", alpha=0.1)
 # ax.plot(timearray, MultiAPT)
-ax.plot(timearray, MultiHDoC, "g-.^", label="MultiLUCB")
-# ax.fill_between(timearray, HDoCLower, HDoCUpper, color ="g", alpha=0.1)
-
-ax.plot(timearray, MultiLUCB, color="b", linestyle='-.', marker='*', label="MultiHDoC")
+ax.plot(timearray, MultiLUCB, "g-.^", label="MultiLUCB")
 # ax.fill_between(timearray, LUCBLower, LUCBUpper, color="b", alpha=0.1)
+
+ax.plot(timearray, MultiHDoC, color="b", linestyle='-.', marker='*', label="MultiHDoC")
+# ax.fill_between(timearray, HDoCLower, HDoCUpper, color ="g", alpha=0.1)
 
 ax.plot(timearray, MultiOurs, "r-.h", label="MultiTUCB")
 # ax.fill_between(timearray, OursLower, OursUpper, color="r", alpha=0.1)
@@ -87,6 +87,6 @@ font = {'style': 'normal', 'weight': 'bold'}
 
 # plt.tight_layout()
 plt.legend(frameon=False, loc=9, ncol=2, bbox_to_anchor=(0.5, 1.18), prop=font)
-plt.savefig('SyntheticDelta.eps', dpi=600, format='eps', bbox_inches='tight')
+plt.savefig("/Users/jiangxuanke/Desktop/ECML2025/SyntheticDelta.eps",dpi=600, format='eps', bbox_inches='tight')
 
 plt.show()

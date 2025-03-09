@@ -24,10 +24,10 @@ for i in range(plot_x_number):
 
 
 MultiAPT = [76932.422, 76645.657, 76415.236, 77662.862, 78820.599, 81605.822, 84295.89, 88646.081, 94461.383, 101699.007]
-MultiHDoC = [138168.50651956, 130296.05305305, 123042.595, 116934.249, 110943.557, 105480.379, 100356.416, 95629.977, 91348.355,
-     87183.979]
-MultiLUCB = [104085.42709677, 100406.35483871, 97096.29032258, 97412.10438144, 95160.71208226, 92642.74807198, 90547.72236504,
+MultiHDoC = [104085.42709677, 100406.35483871, 97096.29032258, 97412.10438144, 95160.71208226, 92642.74807198, 90547.72236504,
      89176.93974359, 87602.74487179, 86095.54487179]
+MultiLUCB = [138168.50651956, 130296.05305305, 123042.595, 116934.249, 110943.557, 105480.379, 100356.416, 95629.977, 91348.355,
+     87183.979]
 MultiOurs = [43756.59757331, 40623.05055612, 37962.87462083, 35404.88270981, 33123.66329626, 31066.92922144, 29301.78361982,
      27501.43579373, 25995.64105157, 24560.03437816]
 
@@ -62,11 +62,11 @@ for i in range(plot_x_number):
 plt.plot(timearray, MultiAPT, "k-.d", label="MultiAPT")
 # plt.fill_between(timearray, APTLower, APTUpper, color ="k", alpha=0.1)
 # ax.plot(timearray, MultiAPT)
-ax.plot(timearray, MultiHDoC, "g-.^", label="MultiLUCB")
-# ax.fill_between(timearray, HDoCLower, HDoCUpper, color ="g", alpha=0.1)
-
-ax.plot(timearray, MultiLUCB, color="b", linestyle='-.', marker='*', label="MultiHDoC")
+ax.plot(timearray, MultiLUCB, "g-.^", label="MultiLUCB")
 # ax.fill_between(timearray, LUCBLower, LUCBUpper, color="b", alpha=0.1)
+
+ax.plot(timearray, MultiHDoC, color="b", linestyle='-.', marker='*', label="MultiHDoC")
+# ax.fill_between(timearray, HDoCLower, HDoCUpper, color ="g", alpha=0.1)
 
 ax.plot(timearray, MultiOurs, "r-.h", label="MultiTUCB")
 # ax.fill_between(timearray, OursLower, OursUpper, color="r", alpha=0.1)
@@ -103,5 +103,5 @@ font = {'style': 'normal', 'weight': 'bold'}
 # plt.tight_layout()
 plt.legend(frameon=False, loc=9, ncol=2, bbox_to_anchor=(0.5, 1.18), prop=font)
 
-plt.savefig('SyntheticEpsilon.eps', dpi=600, format='eps', bbox_inches='tight')
+plt.savefig("/Users/jiangxuanke/Desktop/ECML2025/SyntheticEpsilon.eps", dpi=600, format='eps', bbox_inches='tight')
 plt.show()
