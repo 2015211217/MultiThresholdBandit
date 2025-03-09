@@ -15,7 +15,7 @@ bmmu_2 = [0.375, 0.475, 0.7625, 0.8375, 0.975]
 thresholds = [0.48, 0.75]
 #for simplicity, we assume sigma is the same for every objective
 sigma = 1.0
-repetation = 100
+repetation = 1000
 plotpoint = 10
 epsilon = 0.005
 # hatmu[i][m] = feedbackMatrix[t][i][m]
