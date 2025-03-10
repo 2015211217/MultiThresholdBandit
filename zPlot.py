@@ -87,6 +87,6 @@ font = {'style': 'normal', 'weight': 'bold'}
 
 # plt.tight_layout()
 plt.legend(frameon=False, loc=9, ncol=2, bbox_to_anchor=(0.5, 1.18), prop=font)
-plt.savefig("/Users/jiangxuanke/Desktop/ECML2025/SyntheticDelta.eps",dpi=600, format='eps', bbox_inches='tight')
+plt.savefig("/Users/jiangxuanke/Desktop/ECMLProject/SyntheticDelta.eps",dpi=600, format='eps', bbox_inches='tight')
 
 plt.show()
