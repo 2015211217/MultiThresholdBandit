@@ -1,5 +1,6 @@
 import numpy as np
 import copy
+import sys
 
 def MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
     feedbackMatrix_copy = copy.deepcopy(feedbackMatrix)
@@ -21,9 +22,10 @@ def MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
     #start the algorithm
     for t in range(K, T0):
         #algorithm
-        mediate = np.zeros(K)
+        mediate = np.ones(K) * sys.maxsize
         for i in range(K):
-            mediate[i] = np.sqrt(TiT[i]) * np.abs(bmg[i] - epsilon)
+            if bmg[i] != int(100):
+                mediate[i] = np.sqrt(TiT[i]) * np.abs(bmg[i] - epsilon)
         hati = np.argmin(mediate)
 
         #receive and update
@@ -37,23 +39,16 @@ def MultiAPTG(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
         bmg[hati] = np.max(mediate2)
 
         #stopping criteria
-        # for i in range(K):
-        #     if bmg[i] + np.sqrt((np.log((np.power(sigma, 2) * 4 * K * M * np.power(TiT[i], 2))) / delta) / (
-        #             2 * TiT[i])) <= epsilon:
-        #         return t, i
-        # flag = True
-        # for i in range(K):
-        #     if bmg[i] <= np.sqrt((np.log((np.power(sigma, 2) * 4 * K * M * np.power(TiT[i], 2))) / delta) / (2 * TiT[i])):
-        #         flag = False
-        #         break
-        for i in range(K):
-            if bmg[i] + np.sqrt((2 * np.power(sigma, 2) * np.log((np.power(np.pi, 2) * M * K * np.power(TiT[i], 2))
-                                                                           / (3 * delta))) / TiT[i]) <= epsilon:
-                return t, i
+        if bmg[hati] > np.sqrt((2 * np.power(sigma, 2) * np.log((np.power(np.pi, 2) * M * K * np.power(TiT[hati], 2))
+                                                                / (3 * delta))) / TiT[hati]):
+            bmg[hati] = int(100)
+
+        if bmg[hati] + np.sqrt((2 * np.power(sigma, 2) * np.log((np.power(np.pi, 2) * M * K * np.power(TiT[hati], 2))
+                                                                           / (3 * delta))) / TiT[hati]) <= epsilon:
+            return t, hati
         flag = True
         for i in range(K):
-            if bmg[i] <= np.sqrt((2 * np.power(sigma, 2) * np.log((np.power(np.pi, 2) * M * K * np.power(TiT[i], 2))
-                                                                           / (3 * delta))) / TiT[i]):
+            if bmg[i] < int(100):
                 flag = False
                 break
         # use -1 to indicate bottom

@@ -1,5 +1,6 @@
 import numpy as np
 import copy
+import sys
 
 def MultiLUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
     feedbackMatrix_copy = copy.deepcopy(feedbackMatrix)
@@ -22,10 +23,10 @@ def MultiLUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
     # start the algorithm
     for t in range(K, T0):
         # algorithm
-        # mediate3 = bmg[i] - np.sqrt(np.log(K * K * M * np.log(K * K * M / 2) * (4 + np.log(t))) / TiT[i])
-        mediate3 = np.zeros(K)
+        mediate3 = np.ones(K) * sys.maxsize
         for i in range(K):
-            mediate3[i] = bmg[i] - np.sqrt((2 * np.power(sigma, 2) * np.log((4 * K * M * np.power(TiT[i], 2)))/delta) / (2 * TiT[i]))
+            if bmg[i] != int(100):
+                mediate3[i] = bmg[i] - np.sqrt((2 * np.power(sigma, 2) * np.log((4 * K * M * np.power(TiT[i], 2)))/delta) / (2 * TiT[i]))
             # mediate3 = bmg[i] - np.sqrt((np.power(sigma, 2) * np.log(K * (4 + TiT[i] * TiT[i]))) / TiT[i])
         hati = np.argmin(mediate3)
 
@@ -40,18 +41,19 @@ def MultiLUCB(K, M, T0, sigma, epsilon, delta, feedbackMatrix, thresholds):
         bmg[hati] = np.max(mediate2)
 
         # stopping criteria
-        for i in range(K):
-            if bmg[i] + np.sqrt((2 * np.power(sigma, 2) * np.log((np.power(np.pi, 2) * M * K * np.power(TiT[i], 2))
-                                                                 / (3 * delta))) / TiT[i]) <= epsilon:
-                return t, i
+        if bmg[hati] > np.sqrt((2 * np.power(sigma, 2) * np.log((np.power(np.pi, 2) * M * K * np.power(TiT[hati], 2))
+                                                                / (3 * delta))) / TiT[hati]):
+            bmg[hati] = int(100)
+
+        if bmg[hati] + np.sqrt((2 * np.power(sigma, 2) * np.log((np.power(np.pi, 2) * M * K * np.power(TiT[hati], 2))
+                                                                           / (3 * delta))) / TiT[hati]) <= epsilon:
+            return t, hati
         flag = True
         for i in range(K):
-            if bmg[i] <= np.sqrt((2 * np.power(sigma, 2) * np.log((np.power(np.pi, 2) * M * K * np.power(TiT[i], 2))
-                                                                  / (3 * delta))) / TiT[i]):
+            if bmg[i] < int(100):
                 flag = False
                 break
-
+        # use -1 to indicate bottom
         if flag:
             return t, -1
-
     return T0, -1
